@@ -1,55 +1,32 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
+
+const checkAuth = require('./middlewares/checkAuth');
+const schoolRoutes = require('./routes/schoolRoutes');
+const userRoutes = require('./routes/userRoutes');
+
+dotenv.config();
+
 const app = express();
-
-// Middleware to parse JSON
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// MongoDB Connection URI
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/my_database';
-
-// Connect to MongoDB
-mongoose
-    .connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+// MongoDB Connection
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log('Connected to MongoDB'))
     .catch(err => console.error('MongoDB connection error:', err));
 
-// Define a Mongoose Schema and Model
-const ItemSchema = new mongoose.Schema({
-    name: String,
-    quantity: Number,
-});
+// Public Routes (e.g., user login and register)
+app.use('/api/users', userRoutes);
 
-const Item = mongoose.model('Item', ItemSchema);
+// Secured Routes (Require Authentication)
+app.use(checkAuth); // Protect routes beyond this point
+app.use('/api/schools', schoolRoutes);
 
-// Define Routes
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
-});
-
-// Fetch all items
-app.get('/items', async (req, res) => {
-    try {
-        const items = await Item.find();
-        res.json(items);
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// Add a new item
-app.post('/items', async (req, res) => {
-    const item = new Item(req.body);
-    try {
-        const savedItem = await item.save();
-        res.status(201).json(savedItem);
-    } catch (err) {
-        res.status(400).json({ message: err.message });
-    }
-});
-
-// Start the server
+// Start Server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
 });
