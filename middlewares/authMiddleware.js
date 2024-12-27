@@ -1,25 +1,53 @@
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
+const logger = require('../utils/logger'); // Import the logger
 
-const authMiddleware = (roles = []) => {
-  return (req, res, next) => {
-    const token = req.header('Authorization')?.replace('Bearer ', '');
+const authMiddleware = async (req, res, next) => {
+  try {
+    const token = req.header('Authorization').replace('Bearer ', '');
+
     if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
+      logger.warn('No token provided');
+      return res.status(401).json({ message: 'No token provided' });
     }
 
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = decoded;
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({ _id: decoded.userId });
 
-      if (roles.length && !roles.includes(req.user.role)) {
-        return res.status(403).json({ message: 'Forbidden: You do not have access to this resource' });
-      }
-
-      next();
-    } catch (err) {
-      return res.status(400).json({ message: 'Token is not valid' });
+    if (!user) {
+      logger.warn(`User not found with ID: ${decoded.userId}`);
+      return res.status(401).json({ message: 'User not found' });
     }
-  };
+
+    req.user = user;
+    logger.info(`User authenticated: ${user.email} with role: ${user.role}`);
+    next();
+  } catch (error) {
+    logger.error(`Authentication failed: ${error.message}`);
+    return res.status(401).json({ message: 'Authentication failed' });
+  }
 };
 
-module.exports = authMiddleware;
+// Check if the user is a SuperAdmin
+const isSuperAdmin = (req, res, next) => {
+  if (req.user.role !== 'SuperAdmin') {
+    logger.warn(`Unauthorized attempt to access SuperAdmin route by user: ${req.user.email}`);
+    return res.status(403).json({ message: 'Only SuperAdmin can create a school' });
+  }
+  logger.info(`User ${req.user.email} authorized as SuperAdmin`);
+  next();
+};
+
+// Check if the user is a SchoolAdmin
+const isSchoolAdmin = (req, res, next) => {
+  if (req.user.role !== 'SchoolAdmin') {
+    logger.warn(`Unauthorized attempt to access SchoolAdmin route by user: ${req.user.email}`);
+    return res.status(403).json({ message: 'Only SchoolAdmin can update the school' });
+  }
+  logger.info(`User ${req.user.email} authorized as SchoolAdmin`);
+  next();
+};
+
+module.exports = { authMiddleware, isSuperAdmin, isSchoolAdmin };
+
