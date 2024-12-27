@@ -1,34 +1,57 @@
 const mongoose = require('mongoose');
 const Role = require('./models/Role');
-require('dotenv').config();
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('Connected to MongoDB'))
-    .catch(err => console.error('MongoDB connection error:', err));
-
-const seedRoles = async () => {
+async function seedRoles() {
     const roles = [
         {
-            name: 'Admin',
-            permissions: ['create_user', 'delete_user', 'update_school', 'delete_school']
+            name: 'SuperAdmin',
+            permissions: [
+                'createSchool', 'viewSchool', 'editSchool', 'deleteSchool',
+                'createClassroom', 'viewClassroom', 'editClassroom', 'deleteClassroom',
+                'createStudent', 'viewStudent', 'editStudent', 'deleteStudent'
+            ]
+        },
+        {
+            name: 'SchoolAdmin',
+            permissions: [
+                'viewSchool', 'editSchool',
+                'createClassroom', 'viewClassroom', 'editClassroom', 'deleteClassroom',
+                'createStudent', 'viewStudent', 'editStudent', 'deleteStudent'
+            ]
         },
         {
             name: 'Teacher',
-            permissions: ['view_school', 'create_classroom', 'manage_students']
+            permissions: [
+                'viewClassroom', 'editClassroom',
+                'createStudent', 'viewStudent', 'editStudent'
+            ]
         },
         {
             name: 'Student',
-            permissions: ['view_school', 'view_classroom']
+            permissions: [
+                'viewClassroom', 'viewStudent'
+            ]
         }
     ];
 
     try {
-        await Role.insertMany(roles);
-        console.log('Roles seeded successfully!');
+        await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+        console.log('Connected to the database.');
+
+        for (const role of roles) {
+            const roleExists = await Role.findOne({ name: role.name });
+            if (!roleExists) {
+                await Role.create(role);
+                console.log(`Added role: ${role.name} with permissions: ${role.permissions}`);
+            }
+        }
+
+        console.log('Roles and permissions seeding completed.');
         mongoose.disconnect();
     } catch (error) {
-        console.error('Error seeding roles:', error);
+        console.error('Error seeding roles and permissions:', error);
+        mongoose.disconnect();
     }
-};
+}
 
 seedRoles();
