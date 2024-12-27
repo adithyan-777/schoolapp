@@ -2,16 +2,15 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const logger = require('../utils/logger'); // Import the logger
 
+// Middleware to authenticate the user
 const authMiddleware = async (req, res, next) => {
   try {
     const token = req.header('Authorization').replace('Bearer ', '');
-
     if (!token) {
       logger.warn('No token provided');
       return res.status(401).json({ message: 'No token provided' });
     }
 
-    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ _id: decoded.userId });
 
@@ -29,25 +28,16 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-// Check if the user is a SuperAdmin
-const isSuperAdmin = (req, res, next) => {
-  if (req.user.role !== 'SuperAdmin') {
-    logger.warn(`Unauthorized attempt to access SuperAdmin route by user: ${req.user.email}`);
-    return res.status(403).json({ message: 'Only SuperAdmin can create a school' });
-  }
-  logger.info(`User ${req.user.email} authorized as SuperAdmin`);
-  next();
+// Middleware to check if the user has one of the allowed roles
+const hasRole = (allowedRoles) => {
+  return (req, res, next) => {
+    if (!allowedRoles.includes(req.user.role)) {
+      logger.warn(`Unauthorized attempt by user ${req.user.email} with role ${req.user.role}`);
+      return res.status(403).json({ message: `Only users with one of the following roles can access this route: ${allowedRoles.join(', ')}` });
+    }
+    logger.info(`User ${req.user.email} authorized with role: ${req.user.role}`);
+    next();
+  };
 };
 
-// Check if the user is a SchoolAdmin
-const isSchoolAdmin = (req, res, next) => {
-  if (req.user.role !== 'SchoolAdmin') {
-    logger.warn(`Unauthorized attempt to access SchoolAdmin route by user: ${req.user.email}`);
-    return res.status(403).json({ message: 'Only SchoolAdmin can update the school' });
-  }
-  logger.info(`User ${req.user.email} authorized as SchoolAdmin`);
-  next();
-};
-
-module.exports = { authMiddleware, isSuperAdmin, isSchoolAdmin };
-
+module.exports = { authMiddleware, hasRole };
