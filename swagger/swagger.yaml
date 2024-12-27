@@ -217,3 +217,128 @@ paths:
           description: School not found
       security:
         - BearerAuth: []  # Authentication required for DELETE request
+
+  /api/classrooms/{schoolId}:
+    get:
+      summary: Get all classrooms for a specific school
+      description: "Retrieve all classrooms for the provided school ID. Anyone can access this route."
+      parameters:
+        - name: "schoolId"
+          in: "path"
+          required: true
+          description: "The ID of the school to fetch classrooms for"
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "List of classrooms"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  type: "object"
+                  properties:
+                    name:
+                      type: "string"
+                    teacher:
+                      type: "object"
+                      properties:
+                        name:
+                          type: "string"
+                        email:
+                          type: "string"
+        '404':
+          description: "No classrooms found for this school"
+        '500':
+          description: "Server error"
+      security: []  # No authentication required for GET request
+
+  /api/classrooms:
+    post:
+      summary: "Create a new classroom (SchoolAdmin or SuperAdmin only)"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: "Name of the classroom"
+                teacher:
+                  type: string
+                  description: "Teacher ID for the classroom"
+                school:
+                  type: string
+                  description: "School ID for the classroom"
+              required:
+                - name
+                - teacher
+                - school
+      responses:
+        '201':
+          description: "Classroom created successfully"
+        '403':
+          description: "Unauthorized, only SchoolAdmin or SuperAdmin can create"
+        '500':
+          description: "Server error"
+      security:
+        - BearerAuth: []  # Authentication required for POST request
+
+  /api/classrooms/{classroomId}:
+    put:
+      summary: "Update a classroom (SchoolAdmin or SuperAdmin only)"
+      parameters:
+        - name: "classroomId"
+          in: "path"
+          required: true
+          description: "ID of the classroom to update"
+          schema:
+            type: "string"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: "Updated name of the classroom"
+                teacher:
+                  type: string
+                  description: "Updated teacher ID"
+      responses:
+        '200':
+          description: "Classroom updated successfully"
+        '403':
+          description: "Unauthorized, only SchoolAdmin or SuperAdmin can update"
+        '404':
+          description: "Classroom not found"
+        '500':
+          description: "Server error"
+      security:
+        - BearerAuth: []  # Authentication required for PUT request
+
+    delete:
+      summary: "Delete a classroom (SchoolAdmin or SuperAdmin only)"
+      parameters:
+        - name: "classroomId"
+          in: "path"
+          required: true
+          description: "ID of the classroom to delete"
+          schema:
+            type: "string"
+      responses:
+        '200':
+          description: "Classroom deleted successfully"
+        '403':
+          description: "Unauthorized, only SchoolAdmin or SuperAdmin can delete"
+        '404':
+          description: "Classroom not found"
+        '500':
+          description: "Server error"
+      security:
+        - BearerAuth: []  # Authentication required for DELETE request

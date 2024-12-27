@@ -83,17 +83,13 @@ const updateClassroom = async (req, res) => {
 // Delete a classroom by ID
 const deleteClassroom = async (req, res) => {
   try {
-    const { classroomId } = req.params;
-
     // Find the classroom to delete
-    const classroom = await Classroom.findById(classroomId);
+    const classroom = await Classroom.findByIdAndDelete(req.params.classroomId);
     if (!classroom) {
       return res.status(404).json({ message: 'Classroom not found' });
     }
 
-    await classroom.remove();
-
-    logger.info(`Classroom deleted: ${classroomId}`);
+    logger.info(`Classroom deleted: ${req.params.classroomId}`);
     return res.status(200).json({ message: 'Classroom deleted successfully' });
   } catch (error) {
     logger.error(`Error deleting classroom: ${error.message}`);
