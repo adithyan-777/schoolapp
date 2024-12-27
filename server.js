@@ -5,7 +5,9 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const schoolRoutes = require('./routes/schoolRoutes');
+const classroomRoutes = require('./routes/classroomRoutes');
 const logger = require('./utils/logger'); // Import the logger
+const setupSwagger = require('./swagger/swagger'); // Import the Swagger setup
 
 dotenv.config();
 connectDB();
@@ -21,13 +23,18 @@ app.use((req, res, next) => {
   next();
 });
 
+// Setup Swagger documentation
+setupSwagger(app);
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/schools', schoolRoutes);
+app.use('/api/classrooms', classroomRoutes);
 
 // Set up the server to listen on a port
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
+  logger.info(`API Docs available at http://localhost:${PORT}/api-docs`);
 });
