@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const schoolRoutes = require('./routes/schoolRoutes');
 const classroomRoutes = require('./routes/classroomRoutes');
+const teacherRoutes = require('./routes/teacherRoutes');
 const logger = require('./utils/logger'); // Import the logger
 const setupSwagger = require('./swagger/swagger'); // Import the Swagger setup
 
@@ -31,6 +32,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/schools', schoolRoutes);
 app.use('/api/classrooms', classroomRoutes);
+app.use('/api/teachers', teacherRoutes);
 
 // Set up the server to listen on a port
 const PORT = process.env.PORT || 3000;

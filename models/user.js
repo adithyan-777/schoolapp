@@ -26,7 +26,7 @@ const userSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'School',
       required: function () {
-        return this.role === 'SchoolAdmin';
+        return this.role !== 'SuperAdmin';
       },
     },
     createdBy: {

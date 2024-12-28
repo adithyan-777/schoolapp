@@ -1,26 +1,36 @@
 const mongoose = require('mongoose');
+const User = require('./user'); // Import the base User model
 
+// Extend the User schema for Teachers
 const teacherSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    classroom: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Classroom',  // Reference to assigned classroom
-      required: true,
-    },
     school: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'School',  // Reference to school where the teacher works
+      ref: 'School', // Reference to the school
       required: true,
+    },
+    classrooms: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Classroom', // Classrooms the teacher is associated with
+      },
+    ],
+    subjects: [
+      {
+        type: String, // List of subjects the teacher specializes in
+      },
+    ],
+    designation: {
+      type: String, // Teacher's designation
+    },
+    hireDate: {
+      type: Date, // Hire date of the teacher
+      default: Date.now,
     },
   },
   { timestamps: true }
 );
 
-const Teacher = mongoose.model('Teacher', teacherSchema);
+const Teacher = User.discriminator('Teacher', teacherSchema);
 
 module.exports = Teacher;

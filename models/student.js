@@ -1,15 +1,17 @@
 const mongoose = require('mongoose');
+const User = require('./User'); // Import the base User model
 
+// Extend the User schema for Students
 const studentSchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
     classroom: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Classroom',  // Reference to the assigned classroom
+      ref: 'Classroom', // Reference to the current classroom
+      required: true,
+    },
+    school: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'School', // Reference to the current school
       required: true,
     },
     enrollmentStatus: {
@@ -21,10 +23,14 @@ const studentSchema = new mongoose.Schema(
       {
         school: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: 'School',  // Reference to a school
+          ref: 'School', // Reference to a previous school
+        },
+        classroom: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Classroom', // Reference to a previous classroom
         },
         enrolledDate: {
-          type: Date,
+          type: Date, // Enrollment date
           default: Date.now,
         },
         status: {
@@ -33,10 +39,32 @@ const studentSchema = new mongoose.Schema(
         },
       },
     ],
+    guardians: [
+      {
+        name: {
+          type: String, // Guardian's name
+        },
+        contactInfo: {
+          phone: {
+            type: String, // Guardian's phone
+          },
+          email: {
+            type: String, // Guardian's email
+          },
+        },
+        relationship: {
+          type: String, // Relationship to the student
+        },
+      },
+    ],
+    enrollmentDate: {
+      type: Date, // Enrollment date in the current school
+      default: Date.now,
+    },
   },
   { timestamps: true }
 );
 
-const Student = mongoose.model('Student', studentSchema);
+const Student = User.discriminator('Student', studentSchema);
 
 module.exports = Student;
