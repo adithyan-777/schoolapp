@@ -1,0 +1,32 @@
+Unauthorized:
+  description: Unauthorized
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            example: "Unauthorized"
+
+NotFound:
+  description: Resource not found
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            example: "Resource not found"
+
+InternalServerError:
+  description: Internal server error
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          message:
+            type: string
+            example: "Internal Server Error"

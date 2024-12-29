@@ -1,0 +1,116 @@
+paths:
+  /teachers:
+    get:
+      summary: Retrieve a list of teachers
+      tags:
+        - Teachers
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: List of teachers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/teacher'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Add a new teacher
+      tags:
+        - Teachers
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Teacher'
+      responses:
+        201:
+          description: Teacher added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+        400:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+  /teachers/{id}:
+    get:
+      summary: Retrieve a specific teacher by ID
+      tags:
+        - Teachers
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TeacherId'
+      responses:
+        200:
+          description: Teacher retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update a teacher by ID
+      tags:
+        - Teachers
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TeacherId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Teacher'
+      responses:
+        200:
+          description: Teacher updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Teacher'
+        400:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Delete a teacher by ID
+      tags:
+        - Teachers
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TeacherId'
+      responses:
+        204:
+          description: Teacher deleted successfully
+        404:
+          $ref: '#/components/responses/NotFound'
+        401:
+          $ref: '#/components/responses/Unauthorized'
+        500:
+          $ref: '#/components/responses/InternalServerError'
