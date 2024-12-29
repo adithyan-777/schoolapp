@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const User = require('./User'); // Import the base User model
+const User = require('./user'); // Import the base User model
 
 // Extend the User schema for Students
 const studentSchema = new mongoose.Schema(
