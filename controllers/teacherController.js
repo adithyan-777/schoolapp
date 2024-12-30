@@ -40,18 +40,9 @@ exports.getAllTeachers = async (req, res) => {
   try {
     const userRole = req.user.role; // Assuming you have role stored in `req.user.role`
 
-    let teachers;
+    const teachers = await Teacher.find().populate('school').exec();
 
-    if (userRole === 'SuperAdmin') {
-      teachers = await Teacher.find();
-      logger.warn(teachers)
-    } else if (userRole === 'SchoolAdmin') {
-      teachers = await Teacher.find({ school: req.user.school });
-    } else {
-      return res.status(403).json({ error: 'Permission denied' });
-    }
-
-    return res.status(200).json({ teachers });
+    return res.status(200).json(teachers);
   } catch (error) {
     return res.status(500).json({ error: 'Error retrieving teachers' });
   }

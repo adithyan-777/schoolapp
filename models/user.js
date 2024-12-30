@@ -19,15 +19,13 @@ const userSchema = new Schema(
     },
     role: {
       type: String,
-      enum: ['SuperAdmin', 'SchoolAdmin', 'Teacher', 'Student'],
+      enum: ['SuperAdmin', 'SchoolAdmin'],
       required: true,
     },
     school: {
       type: Schema.Types.ObjectId,
       ref: 'School',
-      required: function () {
-        return this.role !== 'SuperAdmin';
-      },
+      required: false
     },
     createdBy: {
       type: Schema.Types.ObjectId,

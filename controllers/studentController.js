@@ -1,11 +1,11 @@
-const Student = require('../models/student'); // Import the Student model
-const Classroom = require('../models/classroom'); // Import the Classroom model (if you need to validate classrooms)
-const School = require('../models/school'); // Import the School model (if you need to validate schools)
+const Student = require('../models/student'); // Import the updated Student model
+const Classroom = require('../models/classroom'); // Import the Classroom model
+const School = require('../models/school'); // Import the School model
 
 // Create a new student
 exports.createStudent = async (req, res) => {
   try {
-    const { classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
+    const { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
 
     // Validate if classroom and school exist
     const foundClassroom = await Classroom.findById(classroom);
@@ -18,8 +18,18 @@ exports.createStudent = async (req, res) => {
       return res.status(404).json({ message: 'School not found' });
     }
 
+    // Check for duplicate email
+    // const existingStudent = await Student.findOne({ email });
+    // if (existingStudent) {
+    //   return res.status(400).json({ message: 'Student with this email already exists' });
+    // }
+
     // Create the student record
     const student = new Student({
+      firstName,
+      lastName,
+      email,
+      phone,
       classroom,
       school,
       enrollmentStatus,
@@ -33,6 +43,48 @@ exports.createStudent = async (req, res) => {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
   }
+};
+
+// Controller function to get all students by school ID
+exports.getStudentsBySchoolId = async (req, res) => {
+    const { schoolId } = req.params;
+
+    try {
+        const students = await Student.find({ school: schoolId })
+            .populate('classroom')
+            .populate('school')
+            .exec();
+
+        if (!students.length) {
+            return res.status(404).json({ message: 'No students found for this school.' });
+        }
+
+        res.status(200).json(students);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+// Controller function to get students by school ID and classroom ID
+exports.getStudentsBySchoolAndClassroom = async (req, res) => {
+    const { schoolId, classroomId } = req.params;
+
+    try {
+        const students = await Student.find({ school: schoolId, classroom: classroomId })
+            .populate('classroom')
+            .populate('school')
+            .exec();
+
+        if (!students.length) {
+            return res.status(404).json({ message: 'No students found for this school and classroom.' });
+        }
+
+        res.status(200).json(students);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
 };
 
 // Get all students
@@ -74,13 +126,28 @@ exports.getStudentById = async (req, res) => {
 // Update a student by ID
 exports.updateStudent = async (req, res) => {
   const { id } = req.params;
-  const { classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
+  const { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
 
   try {
-    // Find the student and update the data
+    // Validate if classroom and school exist
+    if (classroom) {
+      const foundClassroom = await Classroom.findById(classroom);
+      if (!foundClassroom) {
+        return res.status(404).json({ message: 'Classroom not found' });
+      }
+    }
+
+    if (school) {
+      const foundSchool = await School.findById(school);
+      if (!foundSchool) {
+        return res.status(404).json({ message: 'School not found' });
+      }
+    }
+
+    // Update the student data
     const updatedStudent = await Student.findByIdAndUpdate(
       id,
-      { classroom, school, enrollmentStatus, enrollmentHistory, guardians },
+      { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians },
       { new: true } // Return the updated student
     ).populate('classroom').populate('school').exec();
 

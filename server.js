@@ -33,7 +33,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/schools', schoolRoutes);
 app.use('/api/classrooms', classroomRoutes);
-app.use('/api/teachers', teacherRoutes);
+// app.use('/api/teachers', teacherRoutes);
 app.use('/api/students', studentRoutes);
 
 // Set up the server to listen on a port

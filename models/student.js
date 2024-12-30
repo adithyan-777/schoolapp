@@ -1,9 +1,23 @@
 const mongoose = require('mongoose');
-const User = require('./user'); // Import the base User model
 
-// Extend the User schema for Students
 const studentSchema = new mongoose.Schema(
   {
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    phone: {
+      type: String,
+    },
     classroom: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Classroom', // Reference to the current classroom
@@ -65,6 +79,6 @@ const studentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Student = User.discriminator('Student', studentSchema);
+const Student = mongoose.model('Student', studentSchema);
 
 module.exports = Student;
