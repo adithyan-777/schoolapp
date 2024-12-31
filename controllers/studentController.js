@@ -1,181 +1,158 @@
 const Student = require('../models/student'); // Import the updated Student model
 const Classroom = require('../models/classroom'); // Import the Classroom model
 const School = require('../models/school'); // Import the School model
+const asyncHandler = require('../utils/asyncHandler'); // Import asyncHandler utility
+const AppError = require('../utils/appError'); // Import AppError class
 
 // Create a new student
-exports.createStudent = async (req, res) => {
-  try {
-    const { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
+const createStudent = asyncHandler(async (req, res) => {
+  const { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
 
-    // Validate if classroom and school exist
-    const foundClassroom = await Classroom.findById(classroom);
-    const foundSchool = await School.findById(school);
+  // Validate if classroom and school exist
+  const foundClassroom = await Classroom.findById(classroom);
+  const foundSchool = await School.findById(school);
 
-    if (!foundClassroom) {
-      return res.status(404).json({ message: 'Classroom not found' });
-    }
-    if (!foundSchool) {
-      return res.status(404).json({ message: 'School not found' });
-    }
-
-    // Check for duplicate email
-    const existingStudent = await Student.findOne({ email });
-    if (existingStudent) {
-      return res.status(400).json({ message: 'Student with this email already exists' });
-    }
-
-    // Create the student record
-    const student = new Student({
-      firstName,
-      lastName,
-      email,
-      phone,
-      classroom,
-      school,
-      enrollmentStatus,
-      enrollmentHistory,
-      guardians,
-    });
-
-    await student.save();
-    res.status(201).json({ message: 'Student created successfully', student });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+  if (!foundClassroom) {
+    throw new AppError('Classroom not found', 404);
   }
-};
+  if (!foundSchool) {
+    throw new AppError('School not found', 404);
+  }
+
+  // Check for duplicate email
+  const existingStudent = await Student.findOne({ email });
+  if (existingStudent) {
+    throw new AppError('Student with this email already exists', 400);
+  }
+
+  // Create the student record
+  const student = new Student({
+    firstName,
+    lastName,
+    email,
+    phone,
+    classroom,
+    school,
+    enrollmentStatus,
+    enrollmentHistory,
+    guardians,
+  });
+
+  await student.save();
+  res.status(201).json({ message: 'Student created successfully', student });
+});
 
 // Controller function to get all students by school ID
-exports.getStudentsBySchoolId = async (req, res) => {
-    const { schoolId } = req.params;
+const getStudentsBySchoolId = asyncHandler(async (req, res) => {
+  const { schoolId } = req.params;
 
-    try {
-        const students = await Student.find({ school: schoolId })
-            .populate('classroom')
-            .populate('school')
-            .exec();
+  const students = await Student.find({ school: schoolId })
+    .populate('classroom')
+    .populate('school')
+    .exec();
 
-        if (!students.length) {
-            return res.status(404).json({ message: 'No students found for this school.' });
-        }
+  if (!students.length) {
+    throw new AppError('No students found for this school', 404);
+  }
 
-        res.status(200).json(students);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-};
+  res.status(200).json(students);
+});
 
 // Controller function to get students by school ID and classroom ID
-exports.getStudentsBySchoolAndClassroom = async (req, res) => {
-    const { schoolId, classroomId } = req.params;
+const getStudentsBySchoolAndClassroom = asyncHandler(async (req, res) => {
+  const { schoolId, classroomId } = req.params;
 
-    try {
-        const students = await Student.find({ school: schoolId, classroom: classroomId })
-            .populate('classroom')
-            .populate('school')
-            .exec();
+  const students = await Student.find({ school: schoolId, classroom: classroomId })
+    .populate('classroom')
+    .populate('school')
+    .exec();
 
-        if (!students.length) {
-            return res.status(404).json({ message: 'No students found for this school and classroom.' });
-        }
+  if (!students.length) {
+    throw new AppError('No students found for this school and classroom', 404);
+  }
 
-        res.status(200).json(students);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
-    }
-};
+  res.status(200).json(students);
+});
 
 // Get all students
-exports.getAllStudents = async (req, res) => {
-  try {
-    const students = await Student.find()
-      .populate('classroom')
-      .populate('school')
-      .exec();
+const getAllStudents = asyncHandler(async (req, res) => {
+  const students = await Student.find()
+    .populate('classroom')
+    .populate('school')
+    .exec();
 
-    res.status(200).json(students);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
+  res.status(200).json(students);
+});
 
 // Get student by ID
-exports.getStudentById = async (req, res) => {
+const getStudentById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const student = await Student.findById(id)
-      .populate('classroom')
-      .populate('school')
-      .exec();
+  const student = await Student.findById(id)
+    .populate('classroom')
+    .populate('school')
+    .exec();
 
-    if (!student) {
-      return res.status(404).json({ message: 'Student not found' });
-    }
-
-    res.status(200).json(student);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+  if (!student) {
+    throw new AppError('Student not found', 404);
   }
-};
+
+  res.status(200).json(student);
+});
 
 // Update a student by ID
-exports.updateStudent = async (req, res) => {
+const updateStudent = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
 
-  try {
-    // Validate if classroom and school exist
-    if (classroom) {
-      const foundClassroom = await Classroom.findById(classroom);
-      if (!foundClassroom) {
-        return res.status(404).json({ message: 'Classroom not found' });
-      }
+  // Validate if classroom and school exist
+  if (classroom) {
+    const foundClassroom = await Classroom.findById(classroom);
+    if (!foundClassroom) {
+      throw new AppError('Classroom not found', 404);
     }
-
-    if (school) {
-      const foundSchool = await School.findById(school);
-      if (!foundSchool) {
-        return res.status(404).json({ message: 'School not found' });
-      }
-    }
-
-    // Update the student data
-    const updatedStudent = await Student.findByIdAndUpdate(
-      id,
-      { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians },
-      { new: true } // Return the updated student
-    ).populate('classroom').populate('school').exec();
-
-    if (!updatedStudent) {
-      return res.status(404).json({ message: 'Student not found' });
-    }
-
-    res.status(200).json({ message: 'Student updated successfully', student: updatedStudent });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
   }
-};
+
+  if (school) {
+    const foundSchool = await School.findById(school);
+    if (!foundSchool) {
+      throw new AppError('School not found', 404);
+    }
+  }
+
+  // Update the student data
+  const updatedStudent = await Student.findByIdAndUpdate(
+    id,
+    { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians },
+    { new: true } // Return the updated student
+  ).populate('classroom').populate('school').exec();
+
+  if (!updatedStudent) {
+    throw new AppError('Student not found', 404);
+  }
+
+  res.status(200).json({ message: 'Student updated successfully', student: updatedStudent });
+});
 
 // Delete a student by ID
-exports.deleteStudent = async (req, res) => {
+const deleteStudent = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  try {
-    const deletedStudent = await Student.findByIdAndDelete(id);
+  const deletedStudent = await Student.findByIdAndDelete(id);
 
-    if (!deletedStudent) {
-      return res.status(404).json({ message: 'Student not found' });
-    }
-
-    res.status(200).json({ message: 'Student deleted successfully' });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+  if (!deletedStudent) {
+    throw new AppError('Student not found', 404);
   }
+
+  res.status(200).json({ message: 'Student deleted successfully' });
+});
+
+module.exports = {
+  createStudent,
+  getStudentsBySchoolId,
+  getStudentsBySchoolAndClassroom,
+  getAllStudents,
+  getStudentById,
+  updateStudent,
+  deleteStudent,
 };
