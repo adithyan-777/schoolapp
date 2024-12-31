@@ -10,6 +10,7 @@ const teacherRoutes = require('./routes/teacherRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const logger = require('./utils/logger'); // Import the logger
 const setupSwagger = require('./swagger/swagger'); // Import the Swagger setup
+const errorHandler = require('./middlewares/errorHandlerMiddleware')
 
 dotenv.config();
 connectDB();
@@ -35,6 +36,9 @@ app.use('/api/schools', schoolRoutes);
 app.use('/api/classrooms', classroomRoutes);
 // app.use('/api/teachers', teacherRoutes);
 app.use('/api/students', studentRoutes);
+
+
+app.use(errorHandler);
 
 // Set up the server to listen on a port
 const PORT = process.env.PORT || 3000;
