@@ -79,6 +79,13 @@ const studentSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+studentSchema.methods.toJSON = function () {
+  const obj = this.toObject(); // Convert Mongoose document to a plain JavaScript object
+  delete obj.__v; // Optionally remove the __v field
+  return obj;
+};
+
+
 const Student = mongoose.model('Student', studentSchema);
 
 module.exports = Student;

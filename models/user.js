@@ -45,6 +45,14 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+
+userSchema.methods.toJSON = function () {
+  const user = this.toObject(); // Convert Mongoose document to a plain JavaScript object
+  delete user.password; // Remove the password field
+  delete user.__v; // Optionally remove the __v field
+  return user;
+};
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

@@ -40,4 +40,35 @@ const hasRole = (allowedRoles) => {
   };
 };
 
-module.exports = { authMiddleware, hasRole };
+
+const getRedirectUrlForSchoolAdmin = (originalUrl, schoolId) => {
+  const redirectionRules = {
+    '/api/schools': `/api/schools/${schoolId}`,
+    '/api/students': `/api/students/school/${schoolId}`,
+  };
+
+  return Object.keys(redirectionRules).find((route) =>
+    originalUrl.startsWith(route)
+  )
+    ? redirectionRules[originalUrl.split('?')[0]] // Handle query strings gracefully
+    : null;
+};
+
+// Middleware for redirection based on SchoolAdmin role
+const schoolAdminRedirect = (req, res, next) => {
+  if (req.user.role === 'SchoolAdmin') {
+
+    logger.info(JSON.stringify(req.user))
+
+    const redirectUrl = getRedirectUrlForSchoolAdmin(req.originalUrl, req.user.school);
+
+    if (redirectUrl) {
+      logger.info(`Redirecting SchoolAdmin (${req.user.email}) to: ${redirectUrl}`);
+      return res.redirect(redirectUrl);
+    }
+  }
+  next();
+};
+
+
+module.exports = { authMiddleware, hasRole, schoolAdminRedirect };

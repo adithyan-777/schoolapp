@@ -5,6 +5,7 @@ const studentRoutes = require('./students');
 const schoolRoutes = require('./schools')
 const classroomsRoutes = require('./classrooms');
 const teachersRoutes = require('./teachers')
+const userRoutes = require('./user')
 
 // Base Swagger configuration
 const swaggerBase = {
@@ -72,6 +73,7 @@ swaggerBase.paths = {
   ...studentRoutes,
   ...classroomsRoutes,
   ...schoolRoutes,
+  ...userRoutes,
   // ...teachersRoutes,
 };
 

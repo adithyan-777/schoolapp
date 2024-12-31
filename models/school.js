@@ -19,6 +19,13 @@ const schoolSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+schoolSchema.methods.toJSON = function () {
+  const obj = this.toObject(); // Convert Mongoose document to a plain JavaScript object
+  delete obj.__v; // Optionally remove the __v field
+  return obj;
+};
+
+
 const School = mongoose.model('School', schoolSchema);
 
 module.exports = School;

@@ -19,10 +19,10 @@ exports.createStudent = async (req, res) => {
     }
 
     // Check for duplicate email
-    // const existingStudent = await Student.findOne({ email });
-    // if (existingStudent) {
-    //   return res.status(400).json({ message: 'Student with this email already exists' });
-    // }
+    const existingStudent = await Student.findOne({ email });
+    if (existingStudent) {
+      return res.status(400).json({ message: 'Student with this email already exists' });
+    }
 
     // Create the student record
     const student = new Student({

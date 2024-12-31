@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { createSchool, getAllSchools, getSchoolById, updateSchool, deleteSchool } = require('../controllers/schoolController');
-const { authMiddleware, hasRole } = require('../middlewares/authMiddleware');
+const { authMiddleware, hasRole, schoolAdminRedirect } = require('../middlewares/authMiddleware');
 
 // Create a new school - SuperAdmin only
 router.post('/', authMiddleware, hasRole(['SuperAdmin']), createSchool);
 
 // Get all schools - accessible by everyone
-router.get('/', getAllSchools);
+router.get('/', authMiddleware,schoolAdminRedirect,  getAllSchools);
 
 // Get a specific school by ID - accessible by everyone
 router.get('/:id', getSchoolById);

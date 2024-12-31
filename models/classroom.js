@@ -21,6 +21,12 @@ const classroomSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+classroomSchema.methods.toJSON = function () {
+  const obj = this.toObject(); // Convert Mongoose document to a plain JavaScript object
+  delete obj.__v; // Optionally remove the __v field
+  return obj;
+};
+
 const Classroom = mongoose.model('Classroom', classroomSchema);
 
 module.exports = Classroom;
