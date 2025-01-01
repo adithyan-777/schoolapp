@@ -35,5 +35,9 @@ const schoolClassroomIdSchema = {
   additionalProperties: false,
 };
 
-
-module.exports = { objectIdSchema, schoolIdSchema, classroomIdSchema, schoolClassroomIdSchema };
+module.exports = {
+  objectIdSchema,
+  schoolIdSchema,
+  classroomIdSchema,
+  schoolClassroomIdSchema,
+};

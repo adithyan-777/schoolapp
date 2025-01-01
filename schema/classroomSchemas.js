@@ -18,7 +18,6 @@ const classroomSchema = {
   additionalProperties: false,
 };
 
-
 const updateClassroomSchema = {
   type: 'object',
   properties: {

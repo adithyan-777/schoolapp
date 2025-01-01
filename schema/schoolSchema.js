@@ -38,5 +38,4 @@ const updateSchoolSchema = {
   additionalProperties: false,
 };
 
-
 module.exports = { schoolSchema, updateSchoolSchema };

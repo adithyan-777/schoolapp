@@ -35,11 +35,9 @@ const hasRole = (allowedRoles) => {
       logger.warn(
         `Unauthorized attempt by user ${req.user.email} with role ${req.user.role}`,
       );
-      return res
-        .status(403)
-        .json({
-          message: `Only users with one of the following roles can access this route: ${allowedRoles.join(', ')}`,
-        });
+      return res.status(403).json({
+        message: `Only users with one of the following roles can access this route: ${allowedRoles.join(', ')}`,
+      });
     }
     logger.info(
       `User ${req.user.email} authorized with role: ${req.user.role}`,

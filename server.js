@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
-const helmet = require("helmet");
+const helmet = require('helmet');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -13,7 +13,6 @@ const studentRoutes = require('./routes/studentRoutes');
 const logger = require('./utils/logger'); // Import the logger
 const setupSwagger = require('./swagger/swagger'); // Import the Swagger setup
 const errorHandler = require('./middlewares/errorHandlerMiddleware');
-
 
 dotenv.config();
 connectDB();

@@ -8,7 +8,11 @@ const {
 } = require('../middlewares/authMiddleware');
 const validateSchema = require('../middlewares/validateSchema');
 const { schoolSchema } = require('../schema/schoolSchema');
-const { objectIdSchema, schoolIdSchema, schoolClassroomIdSchema } = require('../schema/paramSchemas');
+const {
+  objectIdSchema,
+  schoolIdSchema,
+  schoolClassroomIdSchema,
+} = require('../schema/paramSchemas');
 const { updateStudentSchema } = require('../schema/studentSchemas');
 
 // Define routes for student-related operations
@@ -25,7 +29,12 @@ router.get(
   schoolAdminRedirect,
   studentController.getAllStudents,
 ); // Get all students
-router.get('/:id',authMiddleware,validateSchema(objectIdSchema, 'params'), studentController.getStudentById); // Get student by ID
+router.get(
+  '/:id',
+  authMiddleware,
+  validateSchema(objectIdSchema, 'params'),
+  studentController.getStudentById,
+); // Get student by ID
 router.get(
   '/school/:schoolId',
   authMiddleware,

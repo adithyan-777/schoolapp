@@ -7,7 +7,10 @@ const {
 } = require('../controllers/classroomController');
 const { authMiddleware, hasRole } = require('../middlewares/authMiddleware');
 const validateSchema = require('../middlewares/validateSchema');
-const { classroomSchema, updateClassroomSchema } = require('../schema/classroomSchemas');
+const {
+  classroomSchema,
+  updateClassroomSchema,
+} = require('../schema/classroomSchemas');
 const { schoolIdSchema, classroomIdSchema } = require('../schema/paramSchemas');
 
 const router = express.Router();

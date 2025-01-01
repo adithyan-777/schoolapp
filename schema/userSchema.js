@@ -35,5 +35,4 @@ const updateUserSchema = {
   additionalProperties: false, // Prevent extra fields
 };
 
-
-module.exports = {userSchema, updateUserSchema};
+module.exports = { userSchema, updateUserSchema };
