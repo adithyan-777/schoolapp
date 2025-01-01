@@ -1,11 +1,15 @@
 const express = require('express');
 const { registerUser, getAllUsers, deleteUser, getUserById, updateUser } = require('../controllers/userController');
 const {authMiddleware, hasRole } = require('../middlewares/authMiddleware');
+const userSchema = require('../schema/userSchema')
+const validateSchema = require('../middlewares/validateSchema')
+
+
 const router = express.Router();
 
 
 // POST route for user registration
-router.post('/', registerUser);
+router.post('/',authMiddleware, validateSchema(userSchema), registerUser);
 
 router.get('/', authMiddleware, hasRole(['SuperAdmin']), getAllUsers);
 
