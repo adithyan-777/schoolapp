@@ -1,6 +1,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
+const helmet = require("helmet");
+const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -12,6 +14,7 @@ const logger = require('./utils/logger'); // Import the logger
 const setupSwagger = require('./swagger/swagger'); // Import the Swagger setup
 const errorHandler = require('./middlewares/errorHandlerMiddleware');
 
+
 dotenv.config();
 connectDB();
 
@@ -19,6 +22,9 @@ const app = express();
 
 // Middleware to parse JSON
 app.use(bodyParser.json());
+
+app.use(helmet());
+app.use(cors());
 
 // Logging for every incoming request
 app.use((req, res, next) => {
