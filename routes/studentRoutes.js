@@ -6,12 +6,17 @@ const {
   authMiddleware,
   schoolAdminRedirect,
 } = require('../middlewares/authMiddleware');
+const validateSchema = require('../middlewares/validateSchema');
+const { schoolSchema } = require('../schema/schoolSchema');
+const { objectIdSchema, schoolIdSchema, schoolClassroomIdSchema } = require('../schema/paramSchemas');
+const { updateStudentSchema } = require('../schema/studentSchemas');
 
 // Define routes for student-related operations
 router.post(
   '/',
   authMiddleware,
   hasRole(['SuperAdmin', 'SchoolAdmin']),
+  validateSchema(schoolSchema),
   studentController.createStudent,
 ); // Create student
 router.get(
@@ -20,27 +25,32 @@ router.get(
   schoolAdminRedirect,
   studentController.getAllStudents,
 ); // Get all students
-router.get('/:id', studentController.getStudentById); // Get student by ID
+router.get('/:id',authMiddleware,validateSchema(objectIdSchema, 'params'), studentController.getStudentById); // Get student by ID
 router.get(
   '/school/:schoolId',
   authMiddleware,
+  validateSchema(schoolIdSchema, 'params'),
   studentController.getStudentsBySchoolId,
 );
 router.get(
   '/school/:schoolId/classroom/:classroomId',
   authMiddleware,
+  validateSchema(schoolClassroomIdSchema, 'params'),
   studentController.getStudentsBySchoolAndClassroom,
 );
 router.put(
   '/:id',
   hasRole(['SuperAdmin', 'SchoolAdmin', 'Teaacher']),
   authMiddleware,
+  validateSchema(objectIdSchema, 'params'),
+  validateSchema(updateStudentSchema),
   studentController.updateStudent,
 ); // Update student
 router.delete(
   '/:id',
   hasRole(['SuperAdmin', 'SchoolAdmin']),
   authMiddleware,
+  validateSchema(objectIdSchema, 'params'),
   studentController.deleteStudent,
 ); // Delete student
 

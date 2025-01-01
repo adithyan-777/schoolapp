@@ -12,7 +12,7 @@ const schoolIdSchema = {
   properties: {
     schoolId: { type: 'string', pattern: '^[a-f\\d]{24}$' },
   },
-  required: ['id'],
+  required: ['schoolId'],
   additionalProperties: false,
 };
 
@@ -21,8 +21,19 @@ const classroomIdSchema = {
   properties: {
     classroomId: { type: 'string', pattern: '^[a-f\\d]{24}$' },
   },
-  required: ['id'],
+  required: ['classroomId'],
   additionalProperties: false,
 };
 
-module.exports = { objectIdSchema, schoolIdSchema, classroomIdSchema };
+const schoolClassroomIdSchema = {
+  type: 'object',
+  properties: {
+    schoolId: { type: 'string', pattern: '^[a-f\\d]{24}$' },
+    classroomId: { type: 'string', pattern: '^[a-f\\d]{24}$' },
+  },
+  required: ['schoolId', 'classroomId'],
+  additionalProperties: false,
+};
+
+
+module.exports = { objectIdSchema, schoolIdSchema, classroomIdSchema, schoolClassroomIdSchema };

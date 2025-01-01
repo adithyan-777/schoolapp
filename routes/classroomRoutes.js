@@ -7,7 +7,7 @@ const {
 } = require('../controllers/classroomController');
 const { authMiddleware, hasRole } = require('../middlewares/authMiddleware');
 const validateSchema = require('../middlewares/validateSchema');
-const { classroomSchema } = require('../schema/classroomSchemas');
+const { classroomSchema, updateClassroomSchema } = require('../schema/classroomSchemas');
 const { schoolIdSchema, classroomIdSchema } = require('../schema/paramSchemas');
 
 const router = express.Router();
@@ -35,7 +35,7 @@ router.put(
   authMiddleware,
   hasRole(['SchoolAdmin', 'SuperAdmin']),
   validateSchema(classroomIdSchema, 'params'),
-  validateSchema(classroomSchema),
+  validateSchema(updateClassroomSchema),
   updateClassroom,
 );
 

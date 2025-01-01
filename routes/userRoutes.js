@@ -7,7 +7,7 @@ const {
   updateUser,
 } = require('../controllers/userController');
 const { authMiddleware, hasRole } = require('../middlewares/authMiddleware');
-const userSchema = require('../schema/userSchema');
+const {userSchema, updateUserSchema} = require('../schema/userSchema');
 const validateSchema = require('../middlewares/validateSchema');
 const { objectIdSchema } = require('../schema/paramSchemas');
 
@@ -32,7 +32,7 @@ router.put(
   authMiddleware,
   hasRole(['SuperAdmin']),
   validateSchema(objectIdSchema, 'params'),
-  validateSchema(userSchema),
+  validateSchema(updateUserSchema),
   updateUser,
 );
 
