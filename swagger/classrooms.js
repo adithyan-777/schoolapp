@@ -2,14 +2,16 @@ module.exports = {
   '/api/classrooms/{schoolId}': {
     get: {
       summary: 'Get all classrooms in a school',
-      description: 'Retrieve all classrooms for a specific school by school ID.',
+      description:
+        'Retrieve all classrooms for a specific school by school ID.',
       tags: ['Classrooms'],
       parameters: [
         {
           name: 'schoolId',
           in: 'path',
           required: true,
-          description: 'The ID of the school whose classrooms are being retrieved.',
+          description:
+            'The ID of the school whose classrooms are being retrieved.',
           schema: {
             type: 'string',
             example: '60d21b4667d0d8992e610c85',
@@ -32,7 +34,10 @@ module.exports = {
                       type: 'object',
                       properties: {
                         name: { type: 'string', example: 'John Doe' },
-                        email: { type: 'string', example: 'johndoe@example.com' },
+                        email: {
+                          type: 'string',
+                          example: 'johndoe@example.com',
+                        },
                       },
                     },
                     school: {
@@ -54,7 +59,10 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'No classrooms found for this school' },
+                  message: {
+                    type: 'string',
+                    example: 'No classrooms found for this school',
+                  },
                 },
               },
             },
@@ -80,7 +88,8 @@ module.exports = {
   '/api/classrooms': {
     post: {
       summary: 'Create a new classroom',
-      description: 'Create a new classroom for a specific school. Requires authentication.',
+      description:
+        'Create a new classroom for a specific school. Requires authentication.',
       tags: ['Classrooms'],
       security: [{ BearerAuth: [] }],
       requestBody: {
@@ -91,7 +100,10 @@ module.exports = {
               type: 'object',
               properties: {
                 name: { type: 'string', example: 'Classroom B' },
-                teacher: { type: 'string', example: '60d21b4667d0d8992e610c80' },
+                teacher: {
+                  type: 'string',
+                  example: '60d21b4667d0d8992e610c80',
+                },
                 school: { type: 'string', example: '60d21b4667d0d8992e610c85' },
               },
               required: ['name', 'school'],
@@ -107,11 +119,17 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'Classroom created successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'Classroom created successfully',
+                  },
                   classroom: {
                     type: 'object',
                     properties: {
-                      id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
+                      id: {
+                        type: 'string',
+                        example: '60d21b9467d0d8992e610c87',
+                      },
                       name: { type: 'string', example: 'Classroom B' },
                     },
                   },
@@ -153,7 +171,8 @@ module.exports = {
   '/api/classrooms/{classroomId}': {
     put: {
       summary: 'Update a classroom by ID',
-      description: 'Update details of a classroom by its ID. Requires authentication.',
+      description:
+        'Update details of a classroom by its ID. Requires authentication.',
       tags: ['Classrooms'],
       security: [{ BearerAuth: [] }],
       parameters: [
@@ -176,7 +195,10 @@ module.exports = {
               type: 'object',
               properties: {
                 name: { type: 'string', example: 'Updated Classroom Name' },
-                teacher: { type: 'string', example: '60d21b4667d0d8992e610c80' },
+                teacher: {
+                  type: 'string',
+                  example: '60d21b4667d0d8992e610c80',
+                },
               },
             },
           },
@@ -190,12 +212,21 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'Classroom updated successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'Classroom updated successfully',
+                  },
                   classroom: {
                     type: 'object',
                     properties: {
-                      id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
-                      name: { type: 'string', example: 'Updated Classroom Name' },
+                      id: {
+                        type: 'string',
+                        example: '60d21b9467d0d8992e610c87',
+                      },
+                      name: {
+                        type: 'string',
+                        example: 'Updated Classroom Name',
+                      },
                     },
                   },
                 },
@@ -257,7 +288,10 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'Classroom deleted successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'Classroom deleted successfully',
+                  },
                 },
               },
             },

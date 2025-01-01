@@ -28,7 +28,9 @@ const createClassroom = asyncHandler(async (req, res, next) => {
   await classroom.save();
 
   logger.info(`Classroom created: ${name} in school ${school}`);
-  res.status(201).json({ message: 'Classroom created successfully', classroom });
+  res
+    .status(201)
+    .json({ message: 'Classroom created successfully', classroom });
 });
 
 // Get all classrooms for a specific school
@@ -66,7 +68,9 @@ const updateClassroom = asyncHandler(async (req, res, next) => {
   await classroom.save();
 
   logger.info(`Classroom updated: ${classroomId}`);
-  res.status(200).json({ message: 'Classroom updated successfully', classroom });
+  res
+    .status(200)
+    .json({ message: 'Classroom updated successfully', classroom });
 });
 
 // Delete a classroom by ID

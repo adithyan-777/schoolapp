@@ -23,10 +23,19 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // Create user
-  const newUser = new User({ name, email, password, role, school, createdBy: req.user?._id });
+  const newUser = new User({
+    name,
+    email,
+    password,
+    role,
+    school,
+    createdBy: req.user?._id,
+  });
   await newUser.save();
 
-  res.status(201).json({ message: 'User created successfully.', user: newUser._id });
+  res
+    .status(201)
+    .json({ message: 'User created successfully.', user: newUser._id });
 });
 
 // Get all users
@@ -38,7 +47,10 @@ const getAllUsers = asyncHandler(async (req, res) => {
 // Get user by ID
 const getUserById = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const user = await User.findById(id).populate('school createdBy', 'name email');
+  const user = await User.findById(id).populate(
+    'school createdBy',
+    'name email',
+  );
   if (!user) {
     throw new AppError('User not found.', 404);
   }
@@ -87,4 +99,3 @@ module.exports = {
   updateUser,
   deleteUser,
 };
-

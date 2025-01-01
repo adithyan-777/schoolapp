@@ -16,7 +16,7 @@ const schoolSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 schoolSchema.methods.toJSON = function () {
@@ -24,7 +24,6 @@ schoolSchema.methods.toJSON = function () {
   delete obj.__v; // Optionally remove the __v field
   return obj;
 };
-
 
 const School = mongoose.model('School', schoolSchema);
 

@@ -18,18 +18,22 @@ module.exports = {
                     name: { type: 'string', example: 'John Doe' },
                     email: { type: 'string', example: 'john.doe@example.com' },
                     school: { type: 'string', example: 'ABC High School' },
-                    classrooms: { 
-                      type: 'array', 
+                    classrooms: {
+                      type: 'array',
                       items: { type: 'string' },
-                      example: ['Math 101', 'Science 202'] 
+                      example: ['Math 101', 'Science 202'],
                     },
-                    subjects: { 
-                      type: 'array', 
+                    subjects: {
+                      type: 'array',
                       items: { type: 'string' },
-                      example: ['Mathematics', 'Physics'] 
+                      example: ['Mathematics', 'Physics'],
                     },
                     designation: { type: 'string', example: 'Teacher' },
-                    hireDate: { type: 'string', format: 'date', example: '2023-01-15' },
+                    hireDate: {
+                      type: 'string',
+                      format: 'date',
+                      example: '2023-01-15',
+                    },
                     role: { type: 'string', example: 'Teacher' },
                   },
                 },
@@ -58,20 +62,33 @@ module.exports = {
                 email: { type: 'string', example: 'john.doe@example.com' },
                 password: { type: 'string', example: 'password123' },
                 school: { type: 'string', example: 'ABC High School' },
-                classrooms: { 
-                  type: 'array', 
+                classrooms: {
+                  type: 'array',
                   items: { type: 'string' },
-                  example: ['Math 101', 'Science 202'] 
+                  example: ['Math 101', 'Science 202'],
                 },
-                subjects: { 
-                  type: 'array', 
+                subjects: {
+                  type: 'array',
                   items: { type: 'string' },
-                  example: ['Mathematics', 'Physics'] 
+                  example: ['Mathematics', 'Physics'],
                 },
                 designation: { type: 'string', example: 'Teacher' },
-                hireDate: { type: 'string', format: 'date', example: '2023-01-15' },
+                hireDate: {
+                  type: 'string',
+                  format: 'date',
+                  example: '2023-01-15',
+                },
               },
-              required: ['name', 'email', 'password', 'school', 'classrooms', 'subjects', 'designation', 'hireDate'],
+              required: [
+                'name',
+                'email',
+                'password',
+                'school',
+                'classrooms',
+                'subjects',
+                'designation',
+                'hireDate',
+              ],
             },
           },
         },
@@ -88,18 +105,22 @@ module.exports = {
                   name: { type: 'string', example: 'John Doe' },
                   email: { type: 'string', example: 'john.doe@example.com' },
                   school: { type: 'string', example: 'ABC High School' },
-                  classrooms: { 
-                    type: 'array', 
+                  classrooms: {
+                    type: 'array',
                     items: { type: 'string' },
-                    example: ['Math 101', 'Science 202'] 
+                    example: ['Math 101', 'Science 202'],
                   },
-                  subjects: { 
-                    type: 'array', 
+                  subjects: {
+                    type: 'array',
                     items: { type: 'string' },
-                    example: ['Mathematics', 'Physics'] 
+                    example: ['Mathematics', 'Physics'],
                   },
                   designation: { type: 'string', example: 'Teacher' },
-                  hireDate: { type: 'string', format: 'date', example: '2023-01-15' },
+                  hireDate: {
+                    type: 'string',
+                    format: 'date',
+                    example: '2023-01-15',
+                  },
                   role: { type: 'string', example: 'Teacher' },
                 },
               },
@@ -143,18 +164,22 @@ module.exports = {
                   name: { type: 'string', example: 'John Doe' },
                   email: { type: 'string', example: 'john.doe@example.com' },
                   school: { type: 'string', example: 'ABC High School' },
-                  classrooms: { 
-                    type: 'array', 
+                  classrooms: {
+                    type: 'array',
                     items: { type: 'string' },
-                    example: ['Math 101', 'Science 202'] 
+                    example: ['Math 101', 'Science 202'],
                   },
-                  subjects: { 
-                    type: 'array', 
+                  subjects: {
+                    type: 'array',
                     items: { type: 'string' },
-                    example: ['Mathematics', 'Physics'] 
+                    example: ['Mathematics', 'Physics'],
                   },
                   designation: { type: 'string', example: 'Teacher' },
-                  hireDate: { type: 'string', format: 'date', example: '2023-01-15' },
+                  hireDate: {
+                    type: 'string',
+                    format: 'date',
+                    example: '2023-01-15',
+                  },
                   role: { type: 'string', example: 'Teacher' },
                 },
               },
@@ -171,7 +196,8 @@ module.exports = {
     },
     put: {
       summary: 'Update a teacher',
-      description: 'Update a teacher by its ID (SuperAdmin, SchoolAdmin, or Teacher only).',
+      description:
+        'Update a teacher by its ID (SuperAdmin, SchoolAdmin, or Teacher only).',
       tags: ['Teachers'],
       // security: [{ bearerAuth: [] }],
       parameters: [
@@ -193,18 +219,22 @@ module.exports = {
               type: 'object',
               properties: {
                 school: { type: 'string', example: 'XYZ High School' },
-                classrooms: { 
-                  type: 'array', 
+                classrooms: {
+                  type: 'array',
                   items: { type: 'string' },
-                  example: ['Math 101', 'Chemistry 202'] 
+                  example: ['Math 101', 'Chemistry 202'],
                 },
-                subjects: { 
-                  type: 'array', 
+                subjects: {
+                  type: 'array',
                   items: { type: 'string' },
-                  example: ['Biology', 'Chemistry'] 
+                  example: ['Biology', 'Chemistry'],
                 },
                 designation: { type: 'string', example: 'Senior Teacher' },
-                hireDate: { type: 'string', format: 'date', example: '2023-01-01' },
+                hireDate: {
+                  type: 'string',
+                  format: 'date',
+                  example: '2023-01-01',
+                },
               },
             },
           },
@@ -222,18 +252,22 @@ module.exports = {
                   name: { type: 'string', example: 'John Doe' },
                   email: { type: 'string', example: 'john.doe@example.com' },
                   school: { type: 'string', example: 'ABC High School' },
-                  classrooms: { 
-                    type: 'array', 
+                  classrooms: {
+                    type: 'array',
                     items: { type: 'string' },
-                    example: ['Math 101', 'Science 202'] 
+                    example: ['Math 101', 'Science 202'],
                   },
-                  subjects: { 
-                    type: 'array', 
+                  subjects: {
+                    type: 'array',
                     items: { type: 'string' },
-                    example: ['Mathematics', 'Physics'] 
+                    example: ['Mathematics', 'Physics'],
                   },
                   designation: { type: 'string', example: 'Teacher' },
-                  hireDate: { type: 'string', format: 'date', example: '2023-01-15' },
+                  hireDate: {
+                    type: 'string',
+                    format: 'date',
+                    example: '2023-01-15',
+                  },
                   role: { type: 'string', example: 'Teacher' },
                 },
               },
@@ -250,7 +284,8 @@ module.exports = {
     },
     delete: {
       summary: 'Delete a teacher',
-      description: 'Delete a teacher by its ID (SuperAdmin or SchoolAdmin only).',
+      description:
+        'Delete a teacher by its ID (SuperAdmin or SchoolAdmin only).',
       tags: ['Teachers'],
       // security: [{ bearerAuth: [] }],
       parameters: [

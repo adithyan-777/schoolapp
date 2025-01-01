@@ -43,14 +43,16 @@ const updateSchool = asyncHandler(async (req, res, next) => {
   const updatedSchool = await School.findByIdAndUpdate(
     req.params.id,
     { name, address, contactNumber },
-    { new: true }
+    { new: true },
   );
 
   if (!updatedSchool) {
     return next(new AppError('School not found', 404));
   }
 
-  res.status(200).json({ message: 'School updated successfully', updatedSchool });
+  res
+    .status(200)
+    .json({ message: 'School updated successfully', updatedSchool });
 });
 
 // Delete a school (only SuperAdmin or SchoolAdmin)
@@ -63,4 +65,10 @@ const deleteSchool = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: 'School deleted successfully' });
 });
 
-module.exports = { createSchool, getAllSchools, getSchoolById, updateSchool, deleteSchool };
+module.exports = {
+  createSchool,
+  getAllSchools,
+  getSchoolById,
+  updateSchool,
+  deleteSchool,
+};

@@ -3,7 +3,8 @@ module.exports = {
     post: {
       tags: ['Auth'],
       summary: 'User login',
-      description: 'Logs in a user and returns a JWT token if the credentials are valid.',
+      description:
+        'Logs in a user and returns a JWT token if the credentials are valid.',
       requestBody: {
         required: true,
         content: {

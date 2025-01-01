@@ -9,7 +9,7 @@ const classroomSchema = new mongoose.Schema(
     },
     teacher: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',  // Teacher (User model) reference
+      ref: 'User', // Teacher (User model) reference
       required: false,
     },
     school: {
@@ -18,7 +18,7 @@ const classroomSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 classroomSchema.methods.toJSON = function () {

@@ -25,7 +25,7 @@ const userSchema = new Schema(
     school: {
       type: Schema.Types.ObjectId,
       ref: 'School',
-      required: false
+      required: false,
     },
     createdBy: {
       type: Schema.Types.ObjectId,
@@ -33,7 +33,7 @@ const userSchema = new Schema(
       required: false,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 userSchema.pre('save', async function (next) {
@@ -44,7 +44,6 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });
-
 
 userSchema.methods.toJSON = function () {
   const user = this.toObject(); // Convert Mongoose document to a plain JavaScript object

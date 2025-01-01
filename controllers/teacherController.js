@@ -1,11 +1,20 @@
 const Teacher = require('../models/teacher'); // Import the Teacher model
-const logger = require('../utils/logger')
+const logger = require('../utils/logger');
 
 // Create a new teacher
 exports.createTeacher = async (req, res) => {
   try {
     // Destructure required fields from request body
-    const { name, email, password, school, classrooms, subjects, designation, hireDate } = req.body;
+    const {
+      name,
+      email,
+      password,
+      school,
+      classrooms,
+      subjects,
+      designation,
+      hireDate,
+    } = req.body;
 
     // Create a new Teacher document (inherits from User model)
     const newTeacher = new Teacher({
@@ -51,7 +60,9 @@ exports.getAllTeachers = async (req, res) => {
 // Get a teacher by ID
 exports.getTeacherById = async (req, res) => {
   try {
-    const teacher = await Teacher.findById(req.params.id).populate('school classrooms');
+    const teacher = await Teacher.findById(req.params.id).populate(
+      'school classrooms',
+    );
     if (!teacher) {
       return res.status(404).json({ error: 'Teacher not found' });
     }
@@ -69,7 +80,7 @@ exports.updateTeacher = async (req, res) => {
     const updatedTeacher = await Teacher.findByIdAndUpdate(
       req.params.id,
       { $set: { school, classrooms, subjects, designation, hireDate } },
-      { new: true } // Return the updated document
+      { new: true }, // Return the updated document
     );
 
     if (!updatedTeacher) {

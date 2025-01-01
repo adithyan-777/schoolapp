@@ -1,7 +1,5 @@
-const logger = require("../utils/logger")
-const AppError = require("../utils/appError");
-
-
+const logger = require('../utils/logger');
+const AppError = require('../utils/appError');
 
 const errorHandler = (err, req, res, next) => {
   if (err instanceof AppError) {
@@ -22,4 +20,4 @@ const errorHandler = (err, req, res, next) => {
   }
 };
 
-module.exports = errorHandler
+module.exports = errorHandler;

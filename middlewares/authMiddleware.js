@@ -32,14 +32,21 @@ const authMiddleware = async (req, res, next) => {
 const hasRole = (allowedRoles) => {
   return (req, res, next) => {
     if (!allowedRoles.includes(req.user.role)) {
-      logger.warn(`Unauthorized attempt by user ${req.user.email} with role ${req.user.role}`);
-      return res.status(403).json({ message: `Only users with one of the following roles can access this route: ${allowedRoles.join(', ')}` });
+      logger.warn(
+        `Unauthorized attempt by user ${req.user.email} with role ${req.user.role}`,
+      );
+      return res
+        .status(403)
+        .json({
+          message: `Only users with one of the following roles can access this route: ${allowedRoles.join(', ')}`,
+        });
     }
-    logger.info(`User ${req.user.email} authorized with role: ${req.user.role}`);
+    logger.info(
+      `User ${req.user.email} authorized with role: ${req.user.role}`,
+    );
     next();
   };
 };
-
 
 const getRedirectUrlForSchoolAdmin = (originalUrl, schoolId) => {
   const redirectionRules = {
@@ -48,7 +55,7 @@ const getRedirectUrlForSchoolAdmin = (originalUrl, schoolId) => {
   };
 
   return Object.keys(redirectionRules).find((route) =>
-    originalUrl.startsWith(route)
+    originalUrl.startsWith(route),
   )
     ? redirectionRules[originalUrl.split('?')[0]] // Handle query strings gracefully
     : null;
@@ -57,18 +64,21 @@ const getRedirectUrlForSchoolAdmin = (originalUrl, schoolId) => {
 // Middleware for redirection based on SchoolAdmin role
 const schoolAdminRedirect = (req, res, next) => {
   if (req.user.role === 'SchoolAdmin') {
+    logger.info(JSON.stringify(req.user));
 
-    logger.info(JSON.stringify(req.user))
-
-    const redirectUrl = getRedirectUrlForSchoolAdmin(req.originalUrl, req.user.school);
+    const redirectUrl = getRedirectUrlForSchoolAdmin(
+      req.originalUrl,
+      req.user.school,
+    );
 
     if (redirectUrl) {
-      logger.info(`Redirecting SchoolAdmin (${req.user.email}) to: ${redirectUrl}`);
+      logger.info(
+        `Redirecting SchoolAdmin (${req.user.email}) to: ${redirectUrl}`,
+      );
       return res.redirect(redirectUrl);
     }
   }
   next();
 };
-
 
 module.exports = { authMiddleware, hasRole, schoolAdminRedirect };

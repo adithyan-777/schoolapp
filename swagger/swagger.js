@@ -2,17 +2,18 @@ const swaggerUi = require('swagger-ui-express');
 
 const authRoutes = require('./auth');
 const studentRoutes = require('./students');
-const schoolRoutes = require('./schools')
+const schoolRoutes = require('./schools');
 const classroomsRoutes = require('./classrooms');
-const teachersRoutes = require('./teachers')
-const userRoutes = require('./user')
+const teachersRoutes = require('./teachers');
+const userRoutes = require('./user');
 
 // Base Swagger configuration
 const swaggerBase = {
   openapi: '3.0.0',
   info: {
     title: 'School Management API',
-    description: 'API for managing schools, classrooms, and user authentication.',
+    description:
+      'API for managing schools, classrooms, and user authentication.',
     version: '1.0.0',
   },
   servers: [

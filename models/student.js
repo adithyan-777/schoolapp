@@ -76,7 +76,7 @@ const studentSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 studentSchema.methods.toJSON = function () {
@@ -84,7 +84,6 @@ studentSchema.methods.toJSON = function () {
   delete obj.__v; // Optionally remove the __v field
   return obj;
 };
-
 
 const Student = mongoose.model('Student', studentSchema);
 

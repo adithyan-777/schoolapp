@@ -6,7 +6,17 @@ const AppError = require('../utils/appError'); // Import AppError class
 
 // Create a new student
 const createStudent = asyncHandler(async (req, res) => {
-  const { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    classroom,
+    school,
+    enrollmentStatus,
+    enrollmentHistory,
+    guardians,
+  } = req.body;
 
   // Validate if classroom and school exist
   const foundClassroom = await Classroom.findById(classroom);
@@ -62,7 +72,10 @@ const getStudentsBySchoolId = asyncHandler(async (req, res) => {
 const getStudentsBySchoolAndClassroom = asyncHandler(async (req, res) => {
   const { schoolId, classroomId } = req.params;
 
-  const students = await Student.find({ school: schoolId, classroom: classroomId })
+  const students = await Student.find({
+    school: schoolId,
+    classroom: classroomId,
+  })
     .populate('classroom')
     .populate('school')
     .exec();
@@ -103,7 +116,17 @@ const getStudentById = asyncHandler(async (req, res) => {
 // Update a student by ID
 const updateStudent = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    classroom,
+    school,
+    enrollmentStatus,
+    enrollmentHistory,
+    guardians,
+  } = req.body;
 
   // Validate if classroom and school exist
   if (classroom) {
@@ -123,15 +146,30 @@ const updateStudent = asyncHandler(async (req, res) => {
   // Update the student data
   const updatedStudent = await Student.findByIdAndUpdate(
     id,
-    { firstName, lastName, email, phone, classroom, school, enrollmentStatus, enrollmentHistory, guardians },
-    { new: true } // Return the updated student
-  ).populate('classroom').populate('school').exec();
+    {
+      firstName,
+      lastName,
+      email,
+      phone,
+      classroom,
+      school,
+      enrollmentStatus,
+      enrollmentHistory,
+      guardians,
+    },
+    { new: true }, // Return the updated student
+  )
+    .populate('classroom')
+    .populate('school')
+    .exec();
 
   if (!updatedStudent) {
     throw new AppError('Student not found', 404);
   }
 
-  res.status(200).json({ message: 'Student updated successfully', student: updatedStudent });
+  res
+    .status(200)
+    .json({ message: 'Student updated successfully', student: updatedStudent });
 });
 
 // Delete a student by ID

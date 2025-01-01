@@ -164,7 +164,8 @@ module.exports = {
     },
     put: {
       summary: 'Update a school',
-      description: 'Update a school by its ID (SuperAdmin or SchoolAdmin only).',
+      description:
+        'Update a school by its ID (SuperAdmin or SchoolAdmin only).',
       tags: ['Schools'],
       // security: [{ bearerAuth: [] }],
       parameters: [
@@ -242,7 +243,8 @@ module.exports = {
     },
     delete: {
       summary: 'Delete a school',
-      description: 'Delete a school by its ID (SuperAdmin or SchoolAdmin only).',
+      description:
+        'Delete a school by its ID (SuperAdmin or SchoolAdmin only).',
       tags: ['Schools'],
       // security: [{ bearerAuth: [] }],
       parameters: [

@@ -28,7 +28,7 @@ const teacherSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Teacher = User.discriminator('Teacher', teacherSchema);
