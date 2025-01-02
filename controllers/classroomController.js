@@ -35,27 +35,40 @@ const createClassroom = asyncHandler(async (req, res, next) => {
 
 // Get all classrooms for a specific school
 const getClassrooms = asyncHandler(async (req, res, next) => {
-  const { schoolId } = req.params;
+  const id = req.params.id;
 
   // Find classrooms for the given school
-  const classrooms = await Classroom.find({ school: schoolId })
+  const classrooms = await Classroom.find({ school: id })
     .populate('school', 'name');
 
   if (classrooms.length === 0) {
     return next(new AppError('No classrooms found for this school', 404));
   }
 
-  logger.info(`Retrieved classrooms for school ${schoolId}`);
+  logger.info(`Retrieved classrooms for school ${id}`);
+  res.status(200).json(classrooms);
+});
+
+const getClassroomById = asyncHandler(async (req, res, next) => {
+  const id  = req.params.id;
+
+  // Find classrooms for the given school
+  const classrooms = await Classroom.findById(id)
+    .populate('school', 'name');
+
+  if (classrooms.length === 0) {
+    return next(new AppError('No classrooms found for this id', 404));
+  }
   res.status(200).json(classrooms);
 });
 
 // Update a classroom by ID
 const updateClassroom = asyncHandler(async (req, res, next) => {
-  const { classroomId } = req.params;
+  const id = req.params.id;
   const { name, teacher } = req.body;
 
   // Find the classroom to update
-  const classroom = await Classroom.findById(classroomId);
+  const classroom = await Classroom.findById(id);
   if (!classroom) {
     return next(new AppError('Classroom not found', 404));
   }
@@ -66,7 +79,7 @@ const updateClassroom = asyncHandler(async (req, res, next) => {
 
   await classroom.save();
 
-  logger.info(`Classroom updated: ${classroomId}`);
+  logger.info(`Classroom updated: ${id}`);
   res
     .status(200)
     .json({ message: 'Classroom updated successfully', classroom });
@@ -75,12 +88,12 @@ const updateClassroom = asyncHandler(async (req, res, next) => {
 // Delete a classroom by ID
 const deleteClassroom = asyncHandler(async (req, res, next) => {
   // Find the classroom to delete
-  const classroom = await Classroom.findByIdAndDelete(req.params.classroomId);
+  const classroom = await Classroom.findByIdAndDelete(req.params.id);
   if (!classroom) {
     return next(new AppError('Classroom not found', 404));
   }
 
-  logger.info(`Classroom deleted: ${req.params.classroomId}`);
+  logger.info(`Classroom deleted: ${req.params.id}`);
   res.status(200).json({ message: 'Classroom deleted successfully' });
 });
 
@@ -89,4 +102,5 @@ module.exports = {
   getClassrooms,
   updateClassroom,
   deleteClassroom,
+  getClassroomById
 };

@@ -81,7 +81,7 @@ describe('Classroom API', () => {
 
   it('should get all classrooms for a school', async () => {
     const response = await request(app)
-      .get(`/api/classrooms/${schoolId}`)
+      .get(`/api/classrooms/school/${schoolId}`)
       .expect(200);
 
     expect(response.body.length).toBeGreaterThan(0);
