@@ -9,7 +9,7 @@ let adminToken;
 let schoolId;
 
 beforeAll(async () => {
-try {
+  try {
     // Disconnect the previous connection if it exists
     if (mongoose.connection.readyState !== 0) {
       console.log('Disconnecting existing connection...');
@@ -34,10 +34,9 @@ try {
   const school = await School.create({
     name: 'Test School',
     address: '123 Test Address',
-    contactNumber: '7788992233'
+    contactNumber: '7788992233',
   });
   schoolId = school._id;
-
 
   // Create an admin user and get a token
   const admin = await User.create({
@@ -48,12 +47,10 @@ try {
     school: schoolId,
   });
 
-  const loginResponse = await request(app)
-    .post('/api/auth/login')
-    .send({
-      email: admin.email,
-      password: 'password123',
-    });
+  const loginResponse = await request(app).post('/api/auth/login').send({
+    email: admin.email,
+    password: 'password123',
+  });
   adminToken = loginResponse.body.token;
 });
 
@@ -133,12 +130,10 @@ describe('Classroom API', () => {
   });
 
   it('should not create a classroom without authentication', async () => {
-    const response = await request(app)
-      .post('/api/classrooms')
-      .send({
-        name: 'Another Classroom',
-        school: schoolId,
-      });
+    const response = await request(app).post('/api/classrooms').send({
+      name: 'Another Classroom',
+      school: schoolId,
+    });
 
     expect(response.status).toBe(401); // Unauthorized
     expect(response.body.message).toBe('No token provided');
@@ -148,11 +143,10 @@ describe('Classroom API', () => {
     const newSchool = await School.create({
       name: 'Empty School',
       address: '456 Empty Street',
-      "contactNumber": "8888833333"
+      contactNumber: '8888833333',
     });
 
-    const response = await request(app)
-      .get(`/api/classrooms/${newSchool._id}`);
+    const response = await request(app).get(`/api/classrooms/${newSchool._id}`);
 
     expect(response.status).toBe(404); // Not found
     expect(response.body.message).toBe('No classrooms found for this school');

@@ -144,7 +144,7 @@ module.exports = {
       },
     },
   },
-  '/api/students/school/{schoolId}': {
+  '/api/students/school/{id}': {
     get: {
       summary: 'Get students by school ID',
       description:
@@ -152,7 +152,7 @@ module.exports = {
       tags: ['Students'],
       parameters: [
         {
-          name: 'schoolId',
+          name: 'id',
           in: 'path',
           required: true,
           schema: { type: 'string' },

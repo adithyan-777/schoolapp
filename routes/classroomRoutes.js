@@ -4,7 +4,7 @@ const {
   getClassrooms,
   updateClassroom,
   deleteClassroom,
-  getClassroomById
+  getClassroomById,
 } = require('../controllers/classroomController');
 const { authMiddleware, hasRole } = require('../middlewares/authMiddleware');
 const validateSchema = require('../middlewares/validateSchema');

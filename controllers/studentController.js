@@ -54,9 +54,7 @@ const createStudent = asyncHandler(async (req, res) => {
 
 // Controller function to get all students by school ID
 const getStudentsBySchoolId = asyncHandler(async (req, res) => {
-  const { schoolId } = req.params;
-
-  const students = await Student.find({ school: schoolId })
+  const students = await Student.find({ school: req.params.id })
     .populate('classroom')
     .populate('school')
     .exec();

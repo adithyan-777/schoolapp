@@ -4,7 +4,7 @@ const app = require('../server'); // Assuming your Express app is in server.js
 const User = require('../models/user'); // Adjust the path to your User model
 
 beforeAll(async () => {
-try {
+  try {
     // Disconnect the previous connection if it exists
     if (mongoose.connection.readyState !== 0) {
       console.log('Disconnecting existing connection...');
@@ -42,12 +42,10 @@ try {
   const superuser = await User.create(superuserData);
 
   // Generate token for superuser
-  const response = await request(app)
-    .post('/api/auth/login')
-    .send({
-      email: superuserData.email,
-      password: superuserData.password,
-    });
+  const response = await request(app).post('/api/auth/login').send({
+    email: superuserData.email,
+    password: superuserData.password,
+  });
 
   // Store the auth token in a global variable to use it in tests
   global.superuserToken = response.body.token;
@@ -68,7 +66,7 @@ describe('Authentication API', () => {
   };
 
   it('should register a new user with superuser token', async () => {
-    console.log(global.superuserToken)
+    console.log(global.superuserToken);
     const response = await request(app)
       .post('/api/users') // Correct API path for creating user
       .set('Authorization', `Bearer ${global.superuserToken}`) // Set the token in Authorization header
@@ -76,7 +74,6 @@ describe('Authentication API', () => {
 
     expect(response.status).toBe(201);
     expect(response.body).toHaveProperty('user');
-
   });
 
   it('should not register a new user without token', async () => {

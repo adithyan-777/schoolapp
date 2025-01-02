@@ -2,14 +2,16 @@ module.exports = {
   '/api/classrooms/school/{id}': {
     get: {
       summary: 'Get all classrooms in a school',
-      description: 'Retrieve all classrooms for a specific school by school ID.',
+      description:
+        'Retrieve all classrooms for a specific school by school ID.',
       tags: ['Classrooms'],
       parameters: [
         {
           name: 'id',
           in: 'path',
           required: true,
-          description: 'The ID of the school whose classrooms are being retrieved.',
+          description:
+            'The ID of the school whose classrooms are being retrieved.',
           schema: {
             type: 'string',
           },
@@ -46,7 +48,10 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'No classrooms found for this school' },
+                  message: {
+                    type: 'string',
+                    example: 'No classrooms found for this school',
+                  },
                 },
               },
             },
@@ -140,7 +145,8 @@ module.exports = {
   '/api/classrooms': {
     post: {
       summary: 'Create a new classroom',
-      description: 'Create a new classroom for a specific school. Requires authentication.',
+      description:
+        'Create a new classroom for a specific school. Requires authentication.',
       tags: ['Classrooms'],
       security: [{ BearerAuth: [] }],
       requestBody: {
@@ -166,11 +172,17 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'Classroom created successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'Classroom created successfully',
+                  },
                   classroom: {
                     type: 'object',
                     properties: {
-                      id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
+                      id: {
+                        type: 'string',
+                        example: '60d21b9467d0d8992e610c87',
+                      },
                       name: { type: 'string', example: 'Classroom B' },
                     },
                   },
@@ -211,75 +223,46 @@ module.exports = {
   },
   '/api/classrooms/{id}': {
     get: {
-          summary: 'GET a classroom by ID',
-          description:
-            'GET details of a classroom by its ID. Requires authentication.',
-          tags: ['Classrooms'],
-          security: [{ BearerAuth: [] }],
-          parameters: [
-            {
-              name: 'id',
-              in: 'path',
-              required: true,
-              description: 'The ID of the classroom to be updated.',
+      summary: 'GET a classroom by ID',
+      description:
+        'GET details of a classroom by its ID. Requires authentication.',
+      tags: ['Classrooms'],
+      security: [{ BearerAuth: [] }],
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'The ID of the classroom to be updated.',
+          schema: {
+            type: 'string',
+            example: '60d21b9467d0d8992e610c87',
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: 'The Requested classroom',
+          content: {
+            'application/json': {
               schema: {
-                type: 'string',
-                example: '60d21b9467d0d8992e610c87',
-              },
-            },
-          ],
-          responses: {
-            200: {
-              description: 'The Requested classroom',
-              content: {
-                'application/json': {
-                  schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'The Requested classroom',
+                  },
+                  classroom: {
                     type: 'object',
                     properties: {
-                      message: {
+                      id: {
                         type: 'string',
-                        example: 'The Requested classroom',
+                        example: '60d21b9467d0d8992e610c87',
                       },
-                      classroom: {
-                        type: 'object',
-                        properties: {
-                          id: {
-                            type: 'string',
-                            example: '60d21b9467d0d8992e610c87',
-                          },
-                          name: {
-                            type: 'string',
-                            example: 'Updated Classroom Name',
-                          },
-                        },
+                      name: {
+                        type: 'string',
+                        example: 'Updated Classroom Name',
                       },
-                    },
-                  },
-                },
-              },
-            },
-            404: {
-              description: 'Classroom not found.',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      message: { type: 'string', example: 'Classroom not found' },
-                    },
-                  },
-                },
-              },
-            },
-            500: {
-              description: 'Server error.',
-              content: {
-                'application/json': {
-                  schema: {
-                    type: 'object',
-                    properties: {
-                      message: { type: 'string', example: 'Server error' },
-                      error: { type: 'string', example: 'Error details' },
                     },
                   },
                 },
@@ -287,6 +270,35 @@ module.exports = {
             },
           },
         },
+        404: {
+          description: 'Classroom not found.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Classroom not found' },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: 'Server error.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Server error' },
+                  error: { type: 'string', example: 'Error details' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     put: {
       summary: 'Update a classroom by ID',
       description:

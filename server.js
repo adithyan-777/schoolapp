@@ -8,7 +8,6 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const schoolRoutes = require('./routes/schoolRoutes');
 const classroomRoutes = require('./routes/classroomRoutes');
-const teacherRoutes = require('./routes/teacherRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const logger = require('./utils/logger'); // Import the logger
 const setupSwagger = require('./swagger/swagger'); // Import the Swagger setup
@@ -51,4 +50,4 @@ app.listen(PORT, () => {
   logger.info(`API Docs available at http://localhost:${PORT}/api-docs`);
 });
 
-module.exports = app; 
+module.exports = app;

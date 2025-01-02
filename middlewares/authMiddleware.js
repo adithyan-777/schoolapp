@@ -5,14 +5,14 @@ const logger = require('../utils/logger'); // Import the logger
 // Middleware to authenticate the user
 const authMiddleware = async (req, res, next) => {
   try {
-    let token = req.header('Authorization')
-    logger.warn(token)
+    let token = req.header('Authorization');
+    logger.warn(token);
     if (!token) {
       logger.warn('No token provided');
       return res.status(401).json({ message: 'No token provided' });
     }
     token = token.replace('Bearer ', '');
-    logger.warn(token)
+    logger.warn(token);
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findOne({ _id: decoded.userId });
 
