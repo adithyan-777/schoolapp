@@ -27,13 +27,6 @@ module.exports = {
                   properties: {
                     id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
                     name: { type: 'string', example: 'Classroom A' },
-                    teacher: {
-                      type: 'object',
-                      properties: {
-                        name: { type: 'string', example: 'John Doe' },
-                        email: { type: 'string', example: 'johndoe@example.com' },
-                      },
-                    },
                     school: {
                       type: 'object',
                       properties: {
@@ -103,13 +96,6 @@ module.exports = {
                 properties: {
                   id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
                   name: { type: 'string', example: 'Classroom A' },
-                  teacher: {
-                    type: 'object',
-                    properties: {
-                      name: { type: 'string', example: 'John Doe' },
-                      email: { type: 'string', example: 'johndoe@example.com' },
-                    },
-                  },
                   school: {
                     type: 'object',
                     properties: {
@@ -165,7 +151,6 @@ module.exports = {
               type: 'object',
               properties: {
                 name: { type: 'string', example: 'Classroom B' },
-                teacher: { type: 'string', example: '60d21b4667d0d8992e610c80' },
                 school: { type: 'string', example: '60d21b4667d0d8992e610c85' },
               },
               required: ['name', 'school'],
@@ -195,7 +180,7 @@ module.exports = {
           },
         },
         404: {
-          description: 'School or teacher not found.',
+          description: 'School not found.',
           content: {
             'application/json': {
               schema: {
@@ -328,10 +313,6 @@ module.exports = {
               type: 'object',
               properties: {
                 name: { type: 'string', example: 'Updated Classroom Name' },
-                teacher: {
-                  type: 'string',
-                  example: '60d21b4667d0d8992e610c80',
-                },
               },
             },
           },
