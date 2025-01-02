@@ -50,3 +50,5 @@ app.listen(PORT, () => {
   logger.info(`Server running on port ${PORT}`);
   logger.info(`API Docs available at http://localhost:${PORT}/api-docs`);
 });
+
+module.exports = app; 

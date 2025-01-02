@@ -7,11 +7,6 @@ const classroomSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    teacher: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Teacher (User model) reference
-      required: false,
-    },
     school: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'School', // Reference to a school

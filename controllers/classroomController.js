@@ -39,7 +39,6 @@ const getClassrooms = asyncHandler(async (req, res, next) => {
 
   // Find classrooms for the given school
   const classrooms = await Classroom.find({ school: schoolId })
-    .populate('teacher', 'name email')
     .populate('school', 'name');
 
   if (classrooms.length === 0) {
