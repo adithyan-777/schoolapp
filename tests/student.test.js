@@ -20,21 +20,21 @@ beforeAll(async () => {
     Student.deleteMany({}),
     School.deleteMany({}),
     Classroom.deleteMany({}),
-    User.deleteMany({})
+    User.deleteMany({}),
   ]);
 
   // Create test school
   const school = await School.create({
     name: 'Test School',
     address: '123 Test St',
-    contactNumber: '1234567890'
+    contactNumber: '1234567890',
   });
   schoolId = school._id;
 
   // Create test classroom
   const classroom = await Classroom.create({
     name: 'Test Class',
-    school: schoolId
+    school: schoolId,
   });
   classroomId = classroom._id;
 
@@ -44,7 +44,7 @@ beforeAll(async () => {
     email: 'admin@test.com',
     password: 'password123',
     role: 'SuperAdmin',
-    school: schoolId
+    school: schoolId,
   });
 
   const adminLogin = await request(app)
@@ -87,7 +87,7 @@ describe('Student API', () => {
           lastName: 'Doe',
           email: 'john@test.com',
           classroom: classroomId,
-          school: schoolId
+          school: schoolId,
         });
 
       expect(res.status).toBe(400);
@@ -130,7 +130,7 @@ describe('Student API', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
           firstName: 'Johnny',
-          email: 'johnny@test.com'
+          email: 'johnny@test.com',
         });
 
       expect(res.status).toBe(200);

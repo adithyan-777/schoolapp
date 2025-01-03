@@ -9,8 +9,8 @@ const {
 } = require('../controllers/schoolController');
 const {
   authMiddleware,
-  hasRole,
   schoolAdminRedirect,
+  validateUserAccess,
 } = require('../middlewares/authMiddleware');
 const validateSchema = require('../middlewares/validateSchema');
 const { schoolSchema, updateSchoolSchema } = require('../schema/schoolSchema');
@@ -20,18 +20,25 @@ const { objectIdSchema } = require('../schema/paramSchemas');
 router.post(
   '/',
   authMiddleware,
-  hasRole(['SuperAdmin']),
+  validateUserAccess(['SuperAdmin'], 'School'),
   validateSchema(schoolSchema),
   createSchool,
 );
 
 // Get all schools - accessible by everyone
-router.get('/', authMiddleware, schoolAdminRedirect, getAllSchools);
+router.get(
+  '/',
+  authMiddleware,
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'School'),
+  schoolAdminRedirect,
+  getAllSchools,
+);
 
 // Get a specific school by ID - accessible by everyone
 router.get(
   '/:id',
   authMiddleware,
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'School'),
   validateSchema(objectIdSchema),
   getSchoolById,
 );
@@ -40,7 +47,7 @@ router.get(
 router.put(
   '/:id',
   authMiddleware,
-  hasRole(['SuperAdmin', 'SchoolAdmin']),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'School'),
   validateSchema(objectIdSchema, 'params'),
   validateSchema(updateSchoolSchema),
   updateSchool,
@@ -50,7 +57,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  hasRole(['SuperAdmin', 'SchoolAdmin']),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'School'),
   validateSchema(objectIdSchema, 'params'),
   deleteSchool,
 );

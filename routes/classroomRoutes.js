@@ -6,7 +6,10 @@ const {
   deleteClassroom,
   getClassroomById,
 } = require('../controllers/classroomController');
-const { authMiddleware, hasRole } = require('../middlewares/authMiddleware');
+const {
+  authMiddleware,
+  validateUserAccess,
+} = require('../middlewares/authMiddleware');
 const validateSchema = require('../middlewares/validateSchema');
 const {
   classroomSchema,
@@ -21,6 +24,7 @@ router.get(
   '/school/:id',
   authMiddleware,
   validateSchema(objectIdSchema, 'params'),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'Classroom'),
   getClassrooms,
 );
 
@@ -29,7 +33,7 @@ router.get(
 router.post(
   '/',
   authMiddleware,
-  hasRole(['SchoolAdmin', 'SuperAdmin']),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'Classroom'),
   validateSchema(classroomSchema),
   createClassroom,
 );
@@ -37,7 +41,7 @@ router.post(
 router.get(
   '/:id',
   authMiddleware,
-  hasRole(['SchoolAdmin', 'SuperAdmin']),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'Classroom'),
   validateSchema(objectIdSchema, 'params'),
   getClassroomById,
 );
@@ -46,7 +50,7 @@ router.get(
 router.put(
   '/:id',
   authMiddleware,
-  hasRole(['SchoolAdmin', 'SuperAdmin']),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'Classroom'),
   validateSchema(objectIdSchema, 'params'),
   validateSchema(updateClassroomSchema),
   updateClassroom,
@@ -56,7 +60,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  hasRole(['SchoolAdmin', 'SuperAdmin']),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'Classroom'),
   validateSchema(objectIdSchema, 'params'),
   deleteClassroom,
 );

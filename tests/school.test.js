@@ -22,21 +22,21 @@ beforeAll(async () => {
     Student.deleteMany({}),
     School.deleteMany({}),
     Classroom.deleteMany({}),
-    User.deleteMany({})
+    User.deleteMany({}),
   ]);
 
   // Create test school
   const school = await School.create({
     name: 'Test School',
     address: '123 Test St',
-    contactNumber: '1234567890'
+    contactNumber: '1234567890',
   });
   schoolId = school._id;
 
   // Create test classroom
   const classroom = await Classroom.create({
     name: 'Test Class',
-    school: schoolId
+    school: schoolId,
   });
   classroomId = classroom._id;
 
@@ -46,7 +46,7 @@ beforeAll(async () => {
     email: 'admin@test.com',
     password: 'password123',
     role: 'SuperAdmin',
-    school: schoolId
+    school: schoolId,
   });
 
   // Get admin token
@@ -73,7 +73,7 @@ describe('Student API Tests', () => {
           phone: '1234567890',
           classroom: classroomId,
           school: schoolId,
-          enrollmentStatus: 'Enrolled'
+          enrollmentStatus: 'Enrolled',
         });
 
       expect(response.status).toBe(201);
@@ -82,12 +82,10 @@ describe('Student API Tests', () => {
     });
 
     it('should fail without authentication', async () => {
-      const response = await request(app)
-        .post('/api/students')
-        .send({
-          firstName: 'Jane',
-          lastName: 'Doe'
-        });
+      const response = await request(app).post('/api/students').send({
+        firstName: 'Jane',
+        lastName: 'Doe',
+      });
 
       expect(response.status).toBe(401);
     });
@@ -129,7 +127,7 @@ describe('Student API Tests', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
           firstName: 'John Updated',
-          lastName: 'Doe Updated'
+          lastName: 'Doe Updated',
         });
 
       expect(response.status).toBe(200);
@@ -141,7 +139,7 @@ describe('Student API Tests', () => {
         .put('/api/students/invalidid')
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
-          firstName: 'John'
+          firstName: 'John',
         });
 
       expect(response.status).toBe(400);

@@ -6,7 +6,10 @@ const {
   getUserById,
   updateUser,
 } = require('../controllers/userController');
-const { authMiddleware, hasRole } = require('../middlewares/authMiddleware');
+const {
+  authMiddleware,
+  validateUserAccess,
+} = require('../middlewares/authMiddleware');
 const { userSchema, updateUserSchema } = require('../schema/userSchema');
 const validateSchema = require('../middlewares/validateSchema');
 const { objectIdSchema } = require('../schema/paramSchemas');
@@ -14,15 +17,26 @@ const { objectIdSchema } = require('../schema/paramSchemas');
 const router = express.Router();
 
 // POST route for user registration
-router.post('/', authMiddleware, validateSchema(userSchema), registerUser);
+router.post(
+  '/',
+  authMiddleware,
+  validateUserAccess(['SuperAdmin'], 'User'),
+  validateSchema(userSchema),
+  registerUser,
+);
 
-router.get('/', authMiddleware, hasRole(['SuperAdmin']), getAllUsers);
+router.get(
+  '/',
+  authMiddleware,
+  validateUserAccess(['SuperAdmin'], 'User'),
+  getAllUsers,
+);
 
 // Get user by ID (SuperAdmin or SchoolAdmin for their school only)
 router.get(
   '/:id',
   authMiddleware,
-  hasRole(['SuperAdmin', 'SchoolAdmin']),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'User'),
   validateSchema(objectIdSchema, 'params'),
   getUserById,
 );
@@ -30,7 +44,7 @@ router.get(
 router.put(
   '/:id',
   authMiddleware,
-  hasRole(['SuperAdmin']),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'User'),
   validateSchema(objectIdSchema, 'params'),
   validateSchema(updateUserSchema),
   updateUser,
@@ -39,7 +53,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  hasRole(['SuperAdmin', 'SchoolAdmin']),
+  validateUserAccess(['SuperAdmin'], 'User'),
   validateSchema(objectIdSchema, 'params'),
   deleteUser,
 );
