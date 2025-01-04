@@ -13,15 +13,13 @@ const login = asyncHandler(async (req, res, next) => {
   // Find the user by email
   const user = await User.findOne({ email });
   if (!user) {
-    return next(
-      new AppError(`User not found with this email: ${email}`, 404, true),
-    );
+    return next(new AppError(`Invalid email or password: ${email}`, 401, true));
   }
 
   // Compare passwords
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return next(new AppError(`Invalid credentials`, 400, true));
+    return next(new AppError(`Invalid email or password`, 401, true));
   }
 
   // Generate JWT token

@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const logger = require('../utils/logger'); // Import the logger
+const mongoose = require('mongoose');
 
 // Middleware to authenticate the user
 const authMiddleware = async (req, res, next) => {
@@ -72,6 +73,25 @@ const validateUserAccess = (allowedRoles, modelName) => {
 
     // For SchoolAdmin, check school access
     if (req.user.role === 'SchoolAdmin') {
+      // if (req.method === 'POST') {
+      //   if (
+      //     req.body.school &&
+      //     req.body?.school?.toString() !== req.user?.school?.toString()
+      //   ) {
+      //     logger.warn(
+      //       `SchoolAdmin ${req.user.email} attempted to create ${modelName} for different school`,
+      //     );
+      //     return res.status(403).json({
+      //       message: 'You can only create entities for your assigned school',
+      //     });
+      //   }
+      //   // Force the school to be the admin's assigned school
+      //   req.body.school = req.user.school;
+      //   logger.info(
+      //     `SchoolAdmin ${req.user.email} authorized to create ${modelName} for their school`,
+      //   );
+      //   return next();
+      // }
       const resourceId = req.params.id;
 
       // For list routes (no specific ID), add school filter

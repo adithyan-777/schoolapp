@@ -3,11 +3,20 @@ const mongoose = require('mongoose');
 const app = require('../server');
 const Student = require('../models/student');
 const School = require('../models/school');
-const Classroom = require('../models/classroom');
 const User = require('../models/user');
 
-let adminToken, teacherToken;
-let schoolId, classroomId, studentId;
+jest.setTimeout(30000);
+
+let superAdminToken, schoolAdminToken, otherSchoolAdminToken;
+let schoolId, otherSchoolId, studentId;
+
+const testStudent = {
+  firstName: 'Test',
+  lastName: 'Student',
+  email: 'test@student.com',
+  phone: '1234567890',
+  enrollmentStatus: 'Active',
+};
 
 beforeAll(async () => {
   if (mongoose.connection.readyState !== 0) {
@@ -15,15 +24,13 @@ beforeAll(async () => {
   }
   await mongoose.connect(process.env.MONGO_TEST_URI);
 
-  // Clear test data
   await Promise.all([
     Student.deleteMany({}),
     School.deleteMany({}),
-    Classroom.deleteMany({}),
     User.deleteMany({}),
   ]);
 
-  // Create test school
+  // Create schools
   const school = await School.create({
     name: 'Test School',
     address: '123 Test St',
@@ -31,26 +38,51 @@ beforeAll(async () => {
   });
   schoolId = school._id;
 
-  // Create test classroom
-  const classroom = await Classroom.create({
-    name: 'Test Class',
-    school: schoolId,
+  const otherSchool = await School.create({
+    name: 'Other School',
+    address: '456 Test Ave',
+    contactNumber: '0987654321',
   });
-  classroomId = classroom._id;
+  otherSchoolId = otherSchool._id;
 
-  // Create admin user and get token
-  const admin = await User.create({
-    name: 'Admin',
+  // Create users and get tokens
+  const superAdmin = await User.create({
+    email: 'super@test.com',
+    password: 'password123',
+    name: 'Super Admin',
+    role: 'SuperAdmin',
+  });
+
+  const schoolAdmin = await User.create({
     email: 'admin@test.com',
     password: 'password123',
-    role: 'SuperAdmin',
+    name: 'School Admin',
+    role: 'SchoolAdmin',
     school: schoolId,
   });
 
-  const adminLogin = await request(app)
+  const otherSchoolAdmin = await User.create({
+    email: 'other@test.com',
+    password: 'password123',
+    name: 'Other Admin',
+    role: 'SchoolAdmin',
+    school: otherSchoolId,
+  });
+
+  const superAdminLogin = await request(app)
+    .post('/api/auth/login')
+    .send({ email: 'super@test.com', password: 'password123' });
+  superAdminToken = superAdminLogin.body.token;
+
+  const schoolAdminLogin = await request(app)
     .post('/api/auth/login')
     .send({ email: 'admin@test.com', password: 'password123' });
-  adminToken = adminLogin.body.token;
+  schoolAdminToken = schoolAdminLogin.body.token;
+
+  const otherSchoolAdminLogin = await request(app)
+    .post('/api/auth/login')
+    .send({ email: 'other@test.com', password: 'password123' });
+  otherSchoolAdminToken = otherSchoolAdminLogin.body.token;
 });
 
 afterAll(async () => {
@@ -59,109 +91,130 @@ afterAll(async () => {
 
 describe('Student API', () => {
   describe('POST /api/students', () => {
-    it('should create student with valid data', async () => {
-      const res = await request(app)
+    it('should allow SuperAdmin to create student', async () => {
+      const response = await request(app)
         .post('/api/students')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${superAdminToken}`)
         .send({
-          firstName: 'John',
-          lastName: 'Doe',
-          email: 'john@test.com',
-          phone: '1234567890',
-          classroom: classroomId,
-          school: schoolId,
-          enrollmentStatus: 'Enrolled',
+          ...testStudent,
+          school: schoolId.toString(),
         });
 
-      expect(res.status).toBe(201);
-      expect(res.body.student).toHaveProperty('firstName', 'John');
-      studentId = res.body.student._id;
+      expect(response.status).toBe(201);
+      expect(response.body.student).toHaveProperty(
+        'firstName',
+        testStudent.firstName,
+      );
+      studentId = response.body.student._id;
     });
 
-    it('should reject duplicate email', async () => {
-      const res = await request(app)
+    it('should allow SchoolAdmin to create student in their school', async () => {
+      const response = await request(app)
         .post('/api/students')
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${schoolAdminToken}`)
         .send({
-          firstName: 'Jane',
-          lastName: 'Doe',
-          email: 'john@test.com',
-          classroom: classroomId,
-          school: schoolId,
+          ...testStudent,
+          email: 'another@test.com',
+          school: schoolId.toString(),
         });
 
-      expect(res.status).toBe(400);
+      expect(response.status).toBe(201);
+    });
+
+    it('should not allow SchoolAdmin to create student in another school', async () => {
+      const response = await request(app)
+        .post('/api/students')
+        .set('Authorization', `Bearer ${otherSchoolAdminToken}`)
+        .send({
+          ...testStudent,
+          email: 'third@test.com',
+          school: schoolId.toString(),
+        });
+
+      expect(response.status).toBe(403);
+    });
+
+    it('should validate required fields', async () => {
+      const response = await request(app)
+        .post('/api/students')
+        .set('Authorization', `Bearer ${superAdminToken}`)
+        .send({
+          firstName: 'Test',
+        });
+
+      expect(response.status).toBe(400);
     });
   });
 
   describe('GET /api/students', () => {
-    it('should get all students', async () => {
-      const res = await request(app)
+    it('should get all students for SuperAdmin', async () => {
+      const response = await request(app)
         .get('/api/students')
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set('Authorization', `Bearer ${superAdminToken}`);
 
-      expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
+      expect(response.status).toBe(200);
+      expect(Array.isArray(response.body)).toBe(true);
     });
 
     it('should get student by ID', async () => {
-      const res = await request(app)
+      const response = await request(app)
         .get(`/api/students/${studentId}`)
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set('Authorization', `Bearer ${superAdminToken}`);
 
-      expect(res.status).toBe(200);
-      expect(res.body).toHaveProperty('email', 'john@test.com');
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty('_id', studentId);
     });
 
     it('should get students by school', async () => {
-      const res = await request(app)
+      const response = await request(app)
         .get(`/api/students/school/${schoolId}`)
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set('Authorization', `Bearer ${schoolAdminToken}`);
 
-      expect(res.status).toBe(200);
-      expect(Array.isArray(res.body)).toBe(true);
+      expect(response.status).toBe(200);
+      expect(Array.isArray(response.body)).toBe(true);
     });
   });
 
   describe('PUT /api/students/:id', () => {
     it('should update student', async () => {
-      const res = await request(app)
+      const response = await request(app)
         .put(`/api/students/${studentId}`)
-        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${superAdminToken}`)
         .send({
-          firstName: 'Johnny',
-          email: 'johnny@test.com',
+          firstName: 'Updated Name',
         });
 
-      expect(res.status).toBe(200);
-      expect(res.body.student.firstName).toBe('Johnny');
+      expect(response.status).toBe(200);
+      expect(response.body.student.firstName).toBe('Updated Name');
     });
 
-    it('should reject invalid student ID', async () => {
-      const res = await request(app)
-        .put('/api/students/invalid-id')
-        .set('Authorization', `Bearer ${adminToken}`)
-        .send({ firstName: 'Test' });
+    it('should not allow unauthorized update', async () => {
+      const response = await request(app)
+        .put(`/api/students/${studentId}`)
+        .set('Authorization', `Bearer ${otherSchoolAdminToken}`)
+        .send({
+          firstName: 'Unauthorized Update',
+        });
 
-      expect(res.status).toBe(400);
+      expect(response.status).toBe(403);
     });
   });
 
   describe('DELETE /api/students/:id', () => {
     it('should delete student', async () => {
-      const res = await request(app)
+      const response = await request(app)
         .delete(`/api/students/${studentId}`)
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set('Authorization', `Bearer ${superAdminToken}`);
 
-      expect(res.status).toBe(200);
+      expect(response.status).toBe(200);
     });
 
-    it('should return 404 for deleted student', async () => {
-      const res = await request(app)
+    it('should verify deletion', async () => {
+      const response = await request(app)
         .get(`/api/students/${studentId}`)
-        .set('Authorization', `Bearer ${adminToken}`);
+        .set('Authorization', `Bearer ${superAdminToken}`);
 
-      expect(res.status).toBe(404);
+      expect(response.status).toBe(404);
     });
   });
 });

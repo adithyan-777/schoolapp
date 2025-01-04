@@ -18,9 +18,9 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   // Only SuperAdmin can assign a school to a SchoolAdmin
-  if (role === 'SchoolAdmin' && !school) {
-    throw new AppError('School is required for SchoolAdmin role.', 400);
-  }
+  // if (role === 'SchoolAdmin' && !school) {
+  //   throw new AppError('School is required for SchoolAdmin role.', 400);
+  // }
 
   // Create user
   const newUser = new User({
@@ -35,7 +35,10 @@ const registerUser = asyncHandler(async (req, res) => {
 
   res
     .status(201)
-    .json({ message: 'User created successfully.', user: newUser._id });
+    .json({
+      message: 'User created successfully.',
+      user: { id: newUser._id, email: newUser.email },
+    });
 });
 
 // Get all users
