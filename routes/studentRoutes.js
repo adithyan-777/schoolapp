@@ -30,7 +30,6 @@ router.get(
   '/',
   authMiddleware,
   validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'Student'),
-  schoolAdminRedirect,
   studentController.getAllStudents,
 ); // Get all students
 router.get(

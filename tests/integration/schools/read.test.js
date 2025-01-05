@@ -6,6 +6,7 @@ const School = require('../../../models/school');
 const { getAuthToken } = require('../../utils/authHelpers');
 const { superAdmin, schoolAdmin } = require('../../fixtures/users');
 const { testSchool } = require('../../fixtures/schools');
+const logger = require('../../../utils/logger');
 
 jest.setTimeout(30000);
 
@@ -46,6 +47,7 @@ describe('School Read API', () => {
       .get(`/api/schools/${schoolId}`)
       .set('Authorization', `Bearer ${superAdminToken}`);
 
+    logger.error(JSON.stringify(response.body));
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('name', testSchool.name);
   });
@@ -55,6 +57,7 @@ describe('School Read API', () => {
       .get(`/api/schools/${schoolId}`)
       .set('Authorization', `Bearer ${schoolAdminToken}`);
 
+    logger.error(JSON.stringify(response.body));
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('name', testSchool.name);
   });

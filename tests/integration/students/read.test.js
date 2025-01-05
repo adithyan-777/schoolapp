@@ -26,10 +26,11 @@ describe('Student Read API', () => {
   beforeEach(async () => {
     await dbHandler.clearDatabase();
     superAdminToken = await getAuthToken(superAdmin);
-    schoolAdminToken = await getAuthToken(schoolAdmin);
 
     const school = await School.create(testSchool);
     schoolId = school._id;
+    schoolAdmin.school = schoolId;
+    schoolAdminToken = await getAuthToken(schoolAdmin);
 
     const classroom = await Classroom.create({
       name: 'Test Classroom',

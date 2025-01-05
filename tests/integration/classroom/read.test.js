@@ -59,7 +59,7 @@ describe('Classroom Read API', () => {
 
   it('should allow SchoolAdmin to get classrooms in their school', async () => {
     const response = await request(app)
-      .get('/api/classrooms')
+      .get(`/api/classrooms/${schoolId}`)
       .set('Authorization', `Bearer ${schoolAdminToken}`);
 
     expect(response.status).toBe(200);

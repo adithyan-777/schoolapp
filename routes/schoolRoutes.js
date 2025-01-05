@@ -39,7 +39,7 @@ router.get(
   '/:id',
   authMiddleware,
   validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'School'),
-  validateSchema(objectIdSchema),
+  validateSchema(objectIdSchema, 'params'),
   getSchoolById,
 );
 
@@ -57,7 +57,7 @@ router.put(
 router.delete(
   '/:id',
   authMiddleware,
-  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'School'),
+  validateUserAccess(['SuperAdmin'], 'School'),
   validateSchema(objectIdSchema, 'params'),
   deleteSchool,
 );
