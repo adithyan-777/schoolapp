@@ -7,10 +7,11 @@ const Classroom = require('../../../models/classroom');
 const { getAuthToken } = require('../../utils/authHelpers');
 const { superAdmin, schoolAdmin } = require('../../fixtures/users');
 const { testSchool } = require('../../fixtures/schools');
+const mongoose = require('mongoose');
 
 jest.setTimeout(30000);
 
-describe('Classroom Update API', () => {
+describe('Classroom Delete API', () => {
   let superAdminToken, schoolAdminToken, schoolId, classroomId;
 
   beforeAll(async () => {
@@ -39,31 +40,23 @@ describe('Classroom Update API', () => {
     classroomId = classroom._id.toString(); // Convert ObjectId to string
   });
 
-  it('should allow SuperAdmin to update a classroom', async () => {
+  it('should allow SuperAdmin to delete a classroom', async () => {
     const response = await request(app)
-      .put(`/api/classrooms/${classroomId}`)
-      .set('Authorization', `Bearer ${superAdminToken}`)
-      .send({
-        name: 'Updated Classroom'
-      });
+      .delete(`/api/classrooms/${classroomId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.classroom).toHaveProperty('name', 'Updated Classroom');
   });
 
-  it('should allow SchoolAdmin to update a classroom in their school', async () => {
+  it('should allow SchoolAdmin to delete a classroom in their school', async () => {
     const response = await request(app)
-      .put(`/api/classrooms/${classroomId}`)
-      .set('Authorization', `Bearer ${schoolAdminToken}`)
-      .send({
-        name: 'Updated Classroom by Admin'
-      });
+      .delete(`/api/classrooms/${classroomId}`)
+      .set('Authorization', `Bearer ${schoolAdminToken}`);
 
     expect(response.status).toBe(200);
-    expect(response.body.classroom).toHaveProperty('name', 'Updated Classroom by Admin');
   });
 
-  it('should not allow SchoolAdmin to update a classroom in another school', async () => {
+  it('should not allow SchoolAdmin to delete a classroom in another school', async () => {
     const otherSchool = await School.create({
       name: 'Other School',
       address: '456 Other St',
@@ -76,23 +69,18 @@ describe('Classroom Update API', () => {
     });
 
     const response = await request(app)
-      .put(`/api/classrooms/${otherClassroom._id.toString()}`)
-      .set('Authorization', `Bearer ${schoolAdminToken}`)
-      .send({
-        name: 'Unauthorized Update'
-      });
+      .delete(`/api/classrooms/${otherClassroom._id.toString()}`)
+      .set('Authorization', `Bearer ${schoolAdminToken}`);
 
     expect(response.status).toBe(403);
   });
 
-  it('should validate required fields', async () => {
+  it('should return 404 for non-existent classroom', async () => {
+    const nonExistentClassroomId = new mongoose.Types.ObjectId().toString();
     const response = await request(app)
-      .put(`/api/classrooms/${classroomId}`)
-      .set('Authorization', `Bearer ${superAdminToken}`)
-      .send({
-        name: ''
-      });
+      .delete(`/api/classrooms/${nonExistentClassroomId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`);
 
-    expect(response.status).toBe(400);
+    expect(response.status).toBe(404);
   });
 });

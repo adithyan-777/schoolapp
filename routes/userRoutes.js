@@ -20,7 +20,7 @@ const router = express.Router();
 router.post(
   '/',
   authMiddleware,
-  validateUserAccess(['SuperAdmin'], 'User'),
+  validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'User'),
   validateSchema(userSchema),
   registerUser,
 );

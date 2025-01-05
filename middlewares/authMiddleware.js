@@ -32,98 +32,208 @@ const authMiddleware = async (req, res, next) => {
 };
 
 
+// const validateUserAccess = (allowedRoles, modelName) => {
+//   return async (req, res, next) => {
+//     logger.warn(JSON.stringify(req.user));
+
+//     // First check roles
+//     if (!allowedRoles.includes(req.user.role)) {
+//       logger.warn(
+//         `Unauthorized attempt by user ${req.user.email} with role ${req.user.role}`,
+//       );
+//       return res.status(403).json({
+//         message: `Only users with one of the following roles can access this route: ${allowedRoles.join(', ')}`,
+//       });
+//     }
+
+//     // If SuperAdmin, proceed
+//     if (req.user.role === 'SuperAdmin') {
+//       logger.info(
+//         `SuperAdmin ${req.user.email} authorized with role: ${req.user.role}`,
+//       );
+//        return next();
+//     }
+
+//     // For SchoolAdmin, check school access
+//     if (req.user.role === 'SchoolAdmin') {
+//       if (req.method === 'POST') {
+//         if (
+//           req.body.classroom || req.body.student
+//         ) {
+//           let schoolId
+//           schoolId = req.body.school
+//           if (schoolId.toString() !== req.user.school.toString()) {
+//           logger.warn(
+//             `SchoolAdmin ${req.user.email} attempted to create ${modelName} for different school`,
+//           );
+//           return res.status(403).json({
+//             message: 'You can only create entities for your assigned school',
+//           });
+//         }
+//         // Force the school to be the admin's assigned school
+//         logger.info(
+//           `SchoolAdmin ${req.user.email} authorized to create ${modelName} for their school`,
+//         );
+//         return next();
+//       }}
+//       const resourceId = req.params.id;
+
+//       // For list routes (no specific ID), add school filter
+//       if (!resourceId) {
+//         req.query.school = req.user.school;
+//         logger.info(
+//           `SchoolAdmin ${req.user.email} authorized for ${modelName} list with school filter`,
+//         );
+//         return next();
+//       }
+
+//       try {
+//         // Get the resource and check school
+//         const Model = mongoose.model(modelName);
+//         const resource = await Model.findById(resourceId);
+
+//         if (!resource) {
+//           logger.warn(`${modelName} with ID ${resourceId} not found`);
+//           return res.status(404).json({ message: `${modelName} not found` });
+//         }
+//         logger.error(JSON.stringify(req.user));
+//         logger.error(JSON.stringify(resource));
+//         if (!('school' in req.user)) {
+//           logger.warn(
+//             `SchoolAdmin ${req.user.email} attempted to access ${modelName} from different with no school assigned`,
+//           );
+//           return res.status(403).json({ message: 'Access denied' });
+//         }
+//         logger.error(JSON.stringify(req.user));
+//         let userSchoolId = req.user.school.toString()
+//         let schoolId
+//         if (modelName == "School"){
+//           schoolId = resource._id
+//         }
+//         else{
+//           schoolId = resource.school
+//         }
+//         logger.error(JSON.stringify(resource));
+//         if (schoolId.toString() !== userSchoolId.toString()) {
+//           logger.warn(
+//             `SchoolAdmin ${req.user.email} attempted to access ${modelName} from different school ---{${schoolId}}----{${userSchoolId}}`,
+//           );
+//           return res.status(403).json({ message: 'Access denied' });
+//         }
+
+//         logger.info(
+//           `SchoolAdmin ${req.user.email} authorized for ${modelName} with ID ${resourceId}`,
+//         );
+//         next();
+//       } catch (error) {
+//         logger.error(`Error checking school access: ${error.message}`);
+//         next(error);
+//       }
+//     }
+//   };
+// };
+
+// const mongoose = require('mongoose');
+
 const validateUserAccess = (allowedRoles, modelName) => {
-  return async (req, res, next) => {
-    logger.warn(JSON.stringify(req.user));
+  const validateSchoolAccess = async (req, resource) => {
+    const userSchoolId = req.user.school?.toString();
+    const resourceSchoolId =
+      modelName === 'School' ? resource._id.toString() : resource.school?.toString();
 
-    // First check roles
-    if (!allowedRoles.includes(req.user.role)) {
+    if (userSchoolId !== resourceSchoolId) {
       logger.warn(
-        `Unauthorized attempt by user ${req.user.email} with role ${req.user.role}`,
+        `SchoolAdmin ${req.user.email} attempted to access ${modelName} from a different school. User School: ${userSchoolId}, Resource School: ${resourceSchoolId}`
       );
-      return res.status(403).json({
-        message: `Only users with one of the following roles can access this route: ${allowedRoles.join(', ')}`,
-      });
+      return false;
     }
+    return true;
+  };
 
-    // If SuperAdmin, proceed
-    if (req.user.role === 'SuperAdmin') {
-      logger.info(
-        `SuperAdmin ${req.user.email} authorized with role: ${req.user.role}`,
-      );
-       return next();
-    }
+  return async (req, res, next) => {
+    try {
+      logger.debug(`User Info: ${JSON.stringify(req.user)}`);
 
-    // For SchoolAdmin, check school access
-    if (req.user.role === 'SchoolAdmin') {
-      if (req.method === 'POST') {
-        if (
-          req.body.classroom || req.body.student
-        ) {
-          let schoolId
-          schoolId = req.body.school
-          if (schoolId.toString() !== req.user.school.toString()) {
-          logger.warn(
-            `SchoolAdmin ${req.user.email} attempted to create ${modelName} for different school`,
-          );
-          return res.status(403).json({
-            message: 'You can only create entities for your assigned school',
-          });
-        }
-        // Force the school to be the admin's assigned school
-        logger.info(
-          `SchoolAdmin ${req.user.email} authorized to create ${modelName} for their school`,
-        );
-        return next();
-      }}
-      const resourceId = req.params.id;
-
-      // For list routes (no specific ID), add school filter
-      if (!resourceId) {
-        req.query.school = req.user.school;
-        logger.info(
-          `SchoolAdmin ${req.user.email} authorized for ${modelName} list with school filter`,
-        );
+      // SuperAdmin Bypass
+      if (req.user.role === 'SuperAdmin') {
+        logger.info(`SuperAdmin ${req.user.email} granted access to ${modelName}`);
         return next();
       }
 
-      try {
-        // Get the resource and check school
-        const Model = mongoose.model(modelName);
-        const resource = await Model.findById(resourceId);
-
-        if (!resource) {
-          logger.warn(`${modelName} with ID ${resourceId} not found`);
-          return res.status(404).json({ message: `${modelName} not found` });
-        }
-        // logger.error(JSON.stringify(req.user));
-        // logger.error(JSON.stringify(resource));
-        let userSchoolId = req.user.school
-        let schoolId
-        if (modelName == "School"){
-          schoolId = resource._id
-        }
-        else{
-          schoolId = resource.school.id
-        }
-        if (schoolId.toString() !== userSchoolId.toString()) {
-          logger.warn(
-            `SchoolAdmin ${req.user.email} attempted to access ${modelName} from different school`,
-          );
-          return res.status(403).json({ message: 'Access denied' });
-        }
-
-        logger.info(
-          `SchoolAdmin ${req.user.email} authorized for ${modelName} with ID ${resourceId}`,
+      // Check if the user has a school ID
+      if (!req.user.school) {
+        logger.warn(
+          `User ${req.user.email} with role ${req.user.role} attempted access without a school ID`
         );
-        next();
-      } catch (error) {
-        logger.error(`Error checking school access: ${error.message}`);
-        next(error);
+        return res.status(403).json({ message: 'Access denied: User has no assigned school' });
       }
+
+      // Role Validation
+      if (!allowedRoles.includes(req.user.role)) {
+        logger.warn(`Unauthorized access attempt by ${req.user.email} with role ${req.user.role}`);
+        return res.status(403).json({
+          message: `Access denied. Allowed roles: ${allowedRoles.join(', ')}`,
+        });
+      }
+
+      // SchoolAdmin-Specific Checks
+      if (req.user.role === 'SchoolAdmin') {
+        const { method, body, params, query } = req;
+
+        // For POST requests, validate school ownership
+        if (method === 'POST' && body.school) {
+          const userSchoolId = req.user.school?.toString();
+          if (body.school.toString() !== userSchoolId) {
+            logger.warn(
+              `SchoolAdmin ${req.user.email} attempted to create ${modelName} for another school`
+            );
+            return res.status(403).json({
+              message: 'You can only create entities for your assigned school',
+            });
+          }
+          logger.info(`SchoolAdmin ${req.user.email} authorized to create ${modelName}`);
+          return next();
+        }
+
+        // For GET/PUT/DELETE requests with a specific resource ID
+        if (params.id) {
+          const Model = mongoose.model(modelName);
+          const resource = await Model.findById(params.id);
+
+          if (!resource) {
+            logger.warn(`${modelName} with ID ${params.id} not found`);
+            return res.status(404).json({ message: `${modelName} not found` });
+          }
+
+          if (!(await validateSchoolAccess(req, resource))) {
+            return res.status(403).json({ message: 'Access denied' });
+          }
+          logger.info(
+            `SchoolAdmin ${req.user.email} authorized to access ${modelName} with ID ${params.id}`
+          );
+          return next();
+        }
+
+        // For list routes (no specific ID), apply school filter
+        if (!params.id) {
+          query.school = req.user.school;
+          logger.info(
+            `SchoolAdmin ${req.user.email} authorized for ${modelName} list with school filter`
+          );
+          return next();
+        }
+      }
+
+      // If no conditions matched, proceed with default behavior
+      logger.warn(`Unhandled access case for ${req.user.email}`);
+      return res.status(403).json({ message: 'Access denied' });
+    } catch (error) {
+      logger.error(`Error in validateUserAccess middleware: ${error.message}`);
+      next(error);
     }
   };
 };
+
 
 const getRedirectUrlForSchoolAdmin = (originalUrl, id) => {
   const redirectionRules = {

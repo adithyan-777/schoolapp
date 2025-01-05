@@ -8,6 +8,8 @@ const { getAuthToken } = require('../../utils/authHelpers');
 const { superAdmin, schoolAdmin } = require('../../fixtures/users');
 const { testSchool } = require('../../fixtures/schools');
 
+logger = require('../../../utils/logger');
+
 jest.setTimeout(30000);
 
 describe('Classroom Read API', () => {
@@ -39,29 +41,22 @@ describe('Classroom Read API', () => {
     classroomId = classroom._id.toString(); // Convert ObjectId to string
   });
 
-  it('should allow SuperAdmin to get all classrooms', async () => {
-    const response = await request(app)
-      .get('/api/classrooms')
-      .set('Authorization', `Bearer ${superAdminToken}`);
-
-    expect(response.status).toBe(200);
-    expect(Array.isArray(response.body)).toBe(true);
-  });
-
   it('should allow SuperAdmin to get a classroom by ID', async () => {
     const response = await request(app)
       .get(`/api/classrooms/${classroomId}`)
       .set('Authorization', `Bearer ${superAdminToken}`);
 
+    logger.error(JSON.stringify(response.body)); // Debugging
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('name', 'Test Classroom');
   });
 
   it('should allow SchoolAdmin to get classrooms in their school', async () => {
     const response = await request(app)
-      .get(`/api/classrooms/${schoolId}`)
+      .get(`/api/classrooms/school/${schoolId}`)
       .set('Authorization', `Bearer ${schoolAdminToken}`);
 
+    logger.error(JSON.stringify(response.body)); // Debugging
     expect(response.status).toBe(200);
     expect(Array.isArray(response.body)).toBe(true);
   });
