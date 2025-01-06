@@ -25,6 +25,9 @@ app.use(bodyParser.json());
 
 app.use(helmet());
 app.use(cors());
+app.use(cors({
+  origin: 'https://13.53.200.93:3000/api-docs' // Allow only a specific domain
+}));
 
 // Logging for every incoming request
 app.use((req, res, next) => {
