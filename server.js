@@ -48,7 +48,7 @@ app.use(errorHandler);
 // Set up SSL certificate options
 const sslOptions = {
   cert: fs.readFileSync('/etc/ssl/certs/mydomain.crt'), // Path to your self-signed certificate
-  key: fs.readFileSync('/etc/ssl/private/mydomain.key'), // Path to your private key
+  key: process.env.SSL_KEY, // Path to your private key
 };
 
 // Set up the server to listen on a secure HTTPS port
