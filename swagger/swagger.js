@@ -1,4 +1,5 @@
 const swaggerUi = require('swagger-ui-express');
+const dotenv = require('dotenv');
 
 const authRoutes = require('./auth');
 const studentRoutes = require('./students');
@@ -17,7 +18,7 @@ const swaggerBase = {
   },
   servers: [
     {
-      url: 'http://localhost:3000',
+      url: process.env.SERVER_URL,
       description: 'Local development server',
     },
   ],
