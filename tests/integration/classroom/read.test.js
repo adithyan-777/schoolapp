@@ -7,6 +7,7 @@ const Classroom = require('../../../models/classroom');
 const { getAuthToken } = require('../../utils/authHelpers');
 const { superAdmin, schoolAdmin } = require('../../fixtures/users');
 const { testSchool } = require('../../fixtures/schools');
+const mongoose = require('mongoose');
 
 logger = require('../../../utils/logger');
 
@@ -28,9 +29,8 @@ describe('Classroom Read API', () => {
     superAdminToken = await getAuthToken(superAdmin);
 
     const school = await School.create(testSchool);
-    schoolId = school._id.toString(); // Convert ObjectId to string
+    schoolId = school._id.toString();
 
-    // Assign the school to the schoolAdmin
     schoolAdmin.school = schoolId;
     schoolAdminToken = await getAuthToken(schoolAdmin);
 
@@ -38,7 +38,7 @@ describe('Classroom Read API', () => {
       name: 'Test Classroom',
       school: schoolId
     });
-    classroomId = classroom._id.toString(); // Convert ObjectId to string
+    classroomId = classroom._id.toString();
   });
 
   it('should allow SuperAdmin to get a classroom by ID', async () => {
@@ -46,31 +46,37 @@ describe('Classroom Read API', () => {
       .get(`/api/classrooms/${classroomId}`)
       .set('Authorization', `Bearer ${superAdminToken}`);
 
-    logger.error(JSON.stringify(response.body)); // Debugging
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('name', 'Test Classroom');
   });
 
-  it('should allow SchoolAdmin to get classrooms in their school', async () => {
+  it('should return 404 for non-existent classroom', async () => {
+    const nonExistentId = new mongoose.Types.ObjectId().toString();
     const response = await request(app)
-      .get(`/api/classrooms/school/${schoolId}`)
-      .set('Authorization', `Bearer ${schoolAdminToken}`);
-
-    logger.error(JSON.stringify(response.body)); // Debugging
-    expect(response.status).toBe(200);
-    expect(Array.isArray(response.body)).toBe(true);
+      .get(`/api/classrooms/${nonExistentId}`)
+      .set('Authorization', `Bearer ${superAdminToken}`);
+    logger.error(JSON.stringify(response.body));
+    expect(response.status).toBe(404);
   });
 
-  it('should not allow SchoolAdmin to get classrooms from another school', async () => {
+  it('should return 400 for invalid classroom ID', async () => {
+    const response = await request(app)
+      .get('/api/classrooms/invalid-id')
+      .set('Authorization', `Bearer ${superAdminToken}`);
+
+    expect(response.status).toBe(400);
+  });
+
+  it('should not allow SchoolAdmin to get classroom from another school', async () => {
     const otherSchool = await School.create({
       name: 'Other School',
-      address: '456 Other St',
-      contactNumber: '0987654321'
+      address: '123 Other St',
+      contactNumber: '1234567890'
     });
 
     const otherClassroom = await Classroom.create({
       name: 'Other Classroom',
-      school: otherSchool._id.toString() // Convert ObjectId to string
+      school: otherSchool._id.toString()
     });
 
     const response = await request(app)

@@ -34,7 +34,7 @@ const createClassroom = asyncHandler(async (req, res, next) => {
 });
 
 // Get all classrooms for a specific school
-const getClassrooms = asyncHandler(async (req, res, next) => {
+const getClassroomsBySchool = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
 
   // Find classrooms for the given school
@@ -42,8 +42,7 @@ const getClassrooms = asyncHandler(async (req, res, next) => {
     'school',
     'name',
   );
-
-  if (classrooms.length === 0) {
+  if (!classrooms) {
     return next(new AppError('No classrooms found for this school', 404));
   }
 
@@ -57,7 +56,7 @@ const getClassroomById = asyncHandler(async (req, res, next) => {
   // Find classrooms for the given school
   const classrooms = await Classroom.findById(id).populate('school', 'name');
 
-  if (classrooms.length === 0) {
+  if (!classrooms) {
     return next(new AppError('No classrooms found for this id', 404));
   }
   res.status(200).json(classrooms);
@@ -100,7 +99,7 @@ const deleteClassroom = asyncHandler(async (req, res, next) => {
 
 module.exports = {
   createClassroom,
-  getClassrooms,
+  getClassroomsBySchool,
   updateClassroom,
   deleteClassroom,
   getClassroomById,

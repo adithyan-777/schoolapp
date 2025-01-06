@@ -1,7 +1,7 @@
 const express = require('express');
 const {
   createClassroom,
-  getClassrooms,
+  getClassroomsBySchool,
   updateClassroom,
   deleteClassroom,
   getClassroomById,
@@ -25,7 +25,7 @@ router.get(
   authMiddleware,
   validateSchema(objectIdSchema, 'params'),
   validateUserAccess(['SuperAdmin', 'SchoolAdmin'], 'Classroom'),
-  getClassrooms,
+  getClassroomsBySchool,
 );
 
 // Authenticated routes

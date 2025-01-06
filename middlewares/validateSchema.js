@@ -10,11 +10,6 @@ const validateSchema = (schema, source = 'body') => {
 
   return (req, res, next) => {
     const data = req[source]; // Validate body, params, or query
-    logger.warn('-------------ddd------------------');
-    logger.warn(JSON.stringify(data));
-    logger.warn('-------------ddd------------------');
-    logger.warn(typeof data);
-    logger.warn('-------------ddd------------------');
     const valid = validate(data);
 
     if (!valid) {
