@@ -45,7 +45,7 @@ module.exports = {
       summary: 'Create a new school',
       description: 'Create a new school (SuperAdmin only).',
       tags: ['Schools'],
-      // security: [{ bearerAuth: [] }],
+      security: [{ BearerAuth: [] }],
       requestBody: {
         required: true,
         content: {
@@ -167,7 +167,7 @@ module.exports = {
       description:
         'Update a school by its ID (SuperAdmin or SchoolAdmin only).',
       tags: ['Schools'],
-      // security: [{ bearerAuth: [] }],
+      security: [{ BearerAuth: [] }],
       parameters: [
         {
           name: 'id',
@@ -246,7 +246,7 @@ module.exports = {
       description:
         'Delete a school by its ID (SuperAdmin or SchoolAdmin only).',
       tags: ['Schools'],
-      // security: [{ bearerAuth: [] }],
+      security: [{ BearerAuth: [] }],
       parameters: [
         {
           name: 'id',

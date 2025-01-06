@@ -5,10 +5,7 @@ module.exports = {
     if (mongoose.connection.readyState !== 0) {
       await mongoose.disconnect();
     }
-    await mongoose.connect(process.env.MONGO_TEST_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_TEST_URI);
   },
   clearDatabase: async () => {
     const collections = mongoose.connection.collections;

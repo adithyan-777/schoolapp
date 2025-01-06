@@ -141,164 +141,6 @@ module.exports = {
         },
       },
     },
-  },
-  '/api/classrooms': {
-    post: {
-      summary: 'Create a new classroom',
-      description:
-        'Create a new classroom for a specific school. Requires authentication.',
-      tags: ['Classrooms'],
-      security: [{ BearerAuth: [] }],
-      requestBody: {
-        required: true,
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                name: { type: 'string', example: 'Classroom B' },
-                school: { type: 'string', example: '60d21b4667d0d8992e610c85' },
-              },
-              required: ['name', 'school'],
-            },
-          },
-        },
-      },
-      responses: {
-        201: {
-          description: 'Classroom created successfully.',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  message: {
-                    type: 'string',
-                    example: 'Classroom created successfully',
-                  },
-                  classroom: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'string',
-                        example: '60d21b9467d0d8992e610c87',
-                      },
-                      name: { type: 'string', example: 'Classroom B' },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        404: {
-          description: 'School not found.',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  message: { type: 'string', example: 'School not found' },
-                },
-              },
-            },
-          },
-        },
-        500: {
-          description: 'Server error.',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  message: { type: 'string', example: 'Server error' },
-                  error: { type: 'string', example: 'Error details' },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-  '/api/classrooms/{id}': {
-    get: {
-      summary: 'GET a classroom by ID',
-      description:
-        'GET details of a classroom by its ID. Requires authentication.',
-      tags: ['Classrooms'],
-      security: [{ BearerAuth: [] }],
-      parameters: [
-        {
-          name: 'id',
-          in: 'path',
-          required: true,
-          description: 'The ID of the classroom to be updated.',
-          schema: {
-            type: 'string',
-            example: '60d21b9467d0d8992e610c87',
-          },
-        },
-      ],
-      responses: {
-        200: {
-          description: 'The Requested classroom',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  message: {
-                    type: 'string',
-                    example: 'The Requested classroom',
-                  },
-                  classroom: {
-                    type: 'object',
-                    properties: {
-                      id: {
-                        type: 'string',
-                        example: '60d21b9467d0d8992e610c87',
-                      },
-                      name: {
-                        type: 'string',
-                        example: 'Updated Classroom Name',
-                      },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-        404: {
-          description: 'Classroom not found.',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  message: { type: 'string', example: 'Classroom not found' },
-                },
-              },
-            },
-          },
-        },
-        500: {
-          description: 'Server error.',
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                properties: {
-                  message: { type: 'string', example: 'Server error' },
-                  error: { type: 'string', example: 'Error details' },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
     put: {
       summary: 'Update a classroom by ID',
       description:
@@ -431,6 +273,85 @@ module.exports = {
                 type: 'object',
                 properties: {
                   message: { type: 'string', example: 'Classroom not found' },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: 'Server error.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Server error' },
+                  error: { type: 'string', example: 'Error details' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  '/api/classrooms': {
+    post: {
+      summary: 'Create a new classroom',
+      description:
+        'Create a new classroom for a specific school. Requires authentication.',
+      tags: ['Classrooms'],
+      security: [{ BearerAuth: [] }],
+      requestBody: {
+        required: true,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                name: { type: 'string', example: 'Classroom B' },
+                school: { type: 'string', example: '60d21b4667d0d8992e610c85' },
+              },
+              required: ['name', 'school'],
+            },
+          },
+        },
+      },
+      responses: {
+        201: {
+          description: 'Classroom created successfully.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'Classroom created successfully',
+                  },
+                  classroom: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'string',
+                        example: '60d21b9467d0d8992e610c87',
+                      },
+                      name: { type: 'string', example: 'Classroom B' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: 'School not found.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'School not found' },
                 },
               },
             },

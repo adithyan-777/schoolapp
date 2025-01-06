@@ -2,8 +2,9 @@ module.exports = {
   '/api/students': {
     post: {
       summary: 'Create a new student',
-      description: 'Create a new student (SuperAdmin or SchoolAdmin only).',
+      description: 'Create a new student for a specific school. Requires authentication.',
       tags: ['Students'],
+      security: [{ BearerAuth: [] }],
       requestBody: {
         required: true,
         content: {
@@ -11,55 +12,10 @@ module.exports = {
             schema: {
               type: 'object',
               properties: {
-                firstName: {
-                  type: 'string',
-                  description: 'First name of the student.',
-                },
-                lastName: {
-                  type: 'string',
-                  description: 'Last name of the student.',
-                },
-                email: { type: 'string', description: 'Email of the student.' },
-                phone: {
-                  type: 'string',
-                  description: 'Phone number of the student.',
-                },
-                classroom: {
-                  type: 'string',
-                  description: 'ID of the classroom.',
-                },
-                school: { type: 'string', description: 'ID of the school.' },
-                enrollmentStatus: {
-                  type: 'string',
-                  description: 'Enrollment status of the student.',
-                },
-                enrollmentHistory: {
-                  type: 'array',
-                  items: { type: 'string' },
-                  description: 'Enrollment history of the student.',
-                },
-                guardians: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      name: { type: 'string', description: 'Guardian name.' },
-                      contact: {
-                        type: 'string',
-                        description: 'Guardian contact.',
-                      },
-                    },
-                  },
-                  description: 'Details of guardians.',
-                },
+                name: { type: 'string', example: 'Student B' },
+                school: { type: 'string', example: '60d21b4667d0d8992e610c85' },
               },
-              required: [
-                'firstName',
-                'lastName',
-                'email',
-                'classroom',
-                'school',
-              ],
+              required: ['name', 'school'],
             },
           },
         },
@@ -72,28 +28,45 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  id: { type: 'string', description: 'ID of the student.' },
-                  firstName: {
-                    type: 'string',
-                    description: 'First name of the student.',
-                  },
-                  lastName: {
-                    type: 'string',
-                    description: 'Last name of the student.',
+                  message: { type: 'string', example: 'Student created successfully' },
+                  student: {
+                    type: 'object',
+                    properties: {
+                      id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
+                      name: { type: 'string', example: 'Student B' },
+                    },
                   },
                 },
               },
             },
           },
         },
-        400: {
-          description: 'Student with this email already exists.',
-        },
         404: {
-          description: 'Classroom or school not found.',
+          description: 'School not found.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'School not found' },
+                },
+              },
+            },
+          },
         },
         500: {
-          description: 'Internal server error.',
+          description: 'Server error.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Server error' },
+                  error: { type: 'string', example: 'Error details' },
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -146,22 +119,23 @@ module.exports = {
   },
   '/api/students/school/{id}': {
     get: {
-      summary: 'Get students by school ID',
-      description:
-        'Retrieve a list of students belonging to a specific school.',
+      summary: 'Get all students in a school',
+      description: 'Retrieve all students for a specific school by school ID.',
       tags: ['Students'],
       parameters: [
         {
           name: 'id',
           in: 'path',
           required: true,
-          schema: { type: 'string' },
-          description: 'The ID of the school.',
+          description: 'The ID of the school whose students are being retrieved.',
+          schema: {
+            type: 'string',
+          },
         },
       ],
       responses: {
         200: {
-          description: 'A list of students belonging to the specified school.',
+          description: 'List of students retrieved successfully.',
           content: {
             'application/json': {
               schema: {
@@ -169,26 +143,13 @@ module.exports = {
                 items: {
                   type: 'object',
                   properties: {
-                    id: { type: 'string', description: 'ID of the student.' },
-                    firstName: {
-                      type: 'string',
-                      description: 'First name of the student.',
-                    },
-                    lastName: {
-                      type: 'string',
-                      description: 'Last name of the student.',
-                    },
-                    email: {
-                      type: 'string',
-                      description: 'Email of the student.',
-                    },
-                    classroom: {
-                      type: 'object',
-                      description: 'Details of the classroom.',
-                    },
+                    id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
+                    name: { type: 'string', example: 'Student A' },
                     school: {
                       type: 'object',
-                      description: 'Details of the school.',
+                      properties: {
+                        name: { type: 'string', example: 'Greenwood High' },
+                      },
                     },
                   },
                 },
@@ -197,10 +158,34 @@ module.exports = {
           },
         },
         404: {
-          description: 'No students found for this school.',
+          description: 'No students found for the school.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: {
+                    type: 'string',
+                    example: 'No students found for this school',
+                  },
+                },
+              },
+            },
+          },
         },
         500: {
-          description: 'Internal server error.',
+          description: 'Server error.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Server error' },
+                  error: { type: 'string', example: 'Error details' },
+                },
+              },
+            },
+          },
         },
       },
     },
@@ -275,68 +260,97 @@ module.exports = {
     },
   },
   '/api/students/{id}': {
-    put: {
-      summary: 'Update a student by ID',
-      description:
-        'Update details of a specific student (SuperAdmin, SchoolAdmin, or Teacher only).',
+    get: {
+      summary: 'Get a student by ID',
+      description: 'Retrieve a specific student by their ID.',
       tags: ['Students'],
       parameters: [
         {
           name: 'id',
           in: 'path',
           required: true,
-          schema: { type: 'string' },
-          description: 'The ID of the student.',
+          description: 'The ID of the student to be retrieved.',
+          schema: {
+            type: 'string',
+            example: '60d21b9467d0d8992e610c87',
+          },
+        },
+      ],
+      responses: {
+        200: {
+          description: 'Student retrieved successfully.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
+                  name: { type: 'string', example: 'Student A' },
+                  school: {
+                    type: 'object',
+                    properties: {
+                      name: { type: 'string', example: 'Greenwood High' },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: 'Student not found.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Student not found' },
+                },
+              },
+            },
+          },
+        },
+        500: {
+          description: 'Server error.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Server error' },
+                  error: { type: 'string', example: 'Error details' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    put: {
+      summary: 'Update a student by ID',
+      description: 'Update details of a student by their ID. Requires authentication.',
+      tags: ['Students'],
+      security: [{ BearerAuth: [] }],
+      parameters: [
+        {
+          name: 'id',
+          in: 'path',
+          required: true,
+          description: 'The ID of the student to be updated.',
+          schema: {
+            type: 'string',
+            example: '60d21b9467d0d8992e610c87',
+          },
         },
       ],
       requestBody: {
-        required: true,
+        required: false,
         content: {
           'application/json': {
             schema: {
               type: 'object',
               properties: {
-                firstName: {
-                  type: 'string',
-                  description: 'First name of the student.',
-                },
-                lastName: {
-                  type: 'string',
-                  description: 'Last name of the student.',
-                },
-                email: { type: 'string', description: 'Email of the student.' },
-                phone: {
-                  type: 'string',
-                  description: 'Phone number of the student.',
-                },
-                classroom: {
-                  type: 'string',
-                  description: 'ID of the classroom.',
-                },
-                school: { type: 'string', description: 'ID of the school.' },
-                enrollmentStatus: {
-                  type: 'string',
-                  description: 'Enrollment status of the student.',
-                },
-                enrollmentHistory: {
-                  type: 'array',
-                  items: { type: 'string' },
-                  description: 'Enrollment history of the student.',
-                },
-                guardians: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    properties: {
-                      name: { type: 'string', description: 'Guardian name.' },
-                      contact: {
-                        type: 'string',
-                        description: 'Guardian contact.',
-                      },
-                    },
-                  },
-                  description: 'Details of guardians.',
-                },
+                name: { type: 'string', example: 'Updated Student Name' },
               },
             },
           },
@@ -350,14 +364,13 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  id: { type: 'string', description: 'ID of the student.' },
-                  firstName: {
-                    type: 'string',
-                    description: 'First name of the student.',
-                  },
-                  lastName: {
-                    type: 'string',
-                    description: 'Last name of the student.',
+                  message: { type: 'string', example: 'Student updated successfully' },
+                  student: {
+                    type: 'object',
+                    properties: {
+                      id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
+                      name: { type: 'string', example: 'Updated Student Name' },
+                    },
                   },
                 },
               },
@@ -366,35 +379,90 @@ module.exports = {
         },
         404: {
           description: 'Student not found.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Student not found' },
+                },
+              },
+            },
+          },
         },
         500: {
-          description: 'Internal server error.',
+          description: 'Server error.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Server error' },
+                  error: { type: 'string', example: 'Error details' },
+                },
+              },
+            },
+          },
         },
       },
     },
     delete: {
       summary: 'Delete a student by ID',
-      description:
-        'Delete a specific student by ID (SuperAdmin or SchoolAdmin only).',
+      description: 'Delete a student by their ID. Requires authentication.',
       tags: ['Students'],
+      security: [{ BearerAuth: [] }],
       parameters: [
         {
           name: 'id',
           in: 'path',
           required: true,
-          schema: { type: 'string' },
-          description: 'The ID of the student.',
+          description: 'The ID of the student to be deleted.',
+          schema: {
+            type: 'string',
+            example: '60d21b9467d0d8992e610c87',
+          },
         },
       ],
       responses: {
         200: {
           description: 'Student deleted successfully.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Student deleted successfully' },
+                },
+              },
+            },
+          },
         },
         404: {
           description: 'Student not found.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Student not found' },
+                },
+              },
+            },
+          },
         },
         500: {
-          description: 'Internal server error.',
+          description: 'Server error.',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string', example: 'Server error' },
+                  error: { type: 'string', example: 'Error details' },
+                },
+              },
+            },
+          },
         },
       },
     },

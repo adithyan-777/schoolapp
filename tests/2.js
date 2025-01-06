@@ -17,10 +17,7 @@ beforeAll(async () => {
     }
 
     // Connect to the new database
-    await mongoose.connect(process.env.MONGO_TEST_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGO_TEST_URI);
 
     console.log('Database connected successfully');
   } catch (err) {
