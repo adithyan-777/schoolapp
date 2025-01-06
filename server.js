@@ -24,11 +24,16 @@ const app = express();
 app.use(bodyParser.json());
 
 app.use(helmet());
-app.use(cors());
-app.use(cors({
-  origin: 'https://13.53.200.93:3000/api-docs' // Allow only a specific domain
-}));
+// app.use(cors());
+const corsOptions = {
+  origin: '*',  // Allow all domains (can be changed to specific domains if needed)
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],  // Allow specific headers
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
 
+app.use(cors(corsOptions));
 // Logging for every incoming request
 app.use((req, res, next) => {
   logger.debug(`${req.method} request to ${req.url}`);
