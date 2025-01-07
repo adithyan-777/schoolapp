@@ -36,7 +36,7 @@ describe('Classroom Read API', () => {
 
     const classroom = await Classroom.create({
       name: 'Test Classroom',
-      school: schoolId
+      school: schoolId,
     });
     classroomId = classroom._id.toString();
   });
@@ -71,12 +71,12 @@ describe('Classroom Read API', () => {
     const otherSchool = await School.create({
       name: 'Other School',
       address: '123 Other St',
-      contactNumber: '1234567890'
+      contactNumber: '1234567890',
     });
 
     const otherClassroom = await Classroom.create({
       name: 'Other Classroom',
-      school: otherSchool._id.toString()
+      school: otherSchool._id.toString(),
     });
 
     const response = await request(app)

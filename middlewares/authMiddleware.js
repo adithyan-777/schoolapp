@@ -29,16 +29,17 @@ const authMiddleware = async (req, res, next) => {
   }
 };
 
-
 const validateUserAccess = (allowedRoles, modelName) => {
   const validateSchoolAccess = async (req, resource) => {
     const userSchoolId = req.user.school?.toString();
     const resourceSchoolId =
-      modelName === 'School' ? resource._id.toString() : resource.school?.toString();
+      modelName === 'School'
+        ? resource._id.toString()
+        : resource.school?.toString();
 
     if (userSchoolId !== resourceSchoolId) {
       logger.warn(
-        `SchoolAdmin ${req.user.email} attempted to access ${modelName} from a different school. User School: ${userSchoolId}, Resource School: ${resourceSchoolId}`
+        `SchoolAdmin ${req.user.email} attempted to access ${modelName} from a different school. User School: ${userSchoolId}, Resource School: ${resourceSchoolId}`,
       );
       return false;
     }
@@ -51,21 +52,27 @@ const validateUserAccess = (allowedRoles, modelName) => {
 
       // SuperAdmin Bypass
       if (req.user.role === 'SuperAdmin') {
-        logger.info(`SuperAdmin ${req.user.email} granted access to ${modelName}`);
+        logger.info(
+          `SuperAdmin ${req.user.email} granted access to ${modelName}`,
+        );
         return next();
       }
 
       // Check if the user has a school ID
       if (!req.user.school) {
         logger.warn(
-          `User ${req.user.email} with role ${req.user.role} attempted access without a school ID`
+          `User ${req.user.email} with role ${req.user.role} attempted access without a school ID`,
         );
-        return res.status(403).json({ message: 'Access denied: User has no assigned school' });
+        return res
+          .status(403)
+          .json({ message: 'Access denied: User has no assigned school' });
       }
 
       // Role Validation
       if (!allowedRoles.includes(req.user.role)) {
-        logger.warn(`Unauthorized access attempt by ${req.user.email} with role ${req.user.role}`);
+        logger.warn(
+          `Unauthorized access attempt by ${req.user.email} with role ${req.user.role}`,
+        );
         return res.status(403).json({
           message: `Access denied. Allowed roles: ${allowedRoles.join(', ')}`,
         });
@@ -80,13 +87,15 @@ const validateUserAccess = (allowedRoles, modelName) => {
           const userSchoolId = req.user.school?.toString();
           if (body.school.toString() !== userSchoolId) {
             logger.warn(
-              `SchoolAdmin ${req.user.email} attempted to create ${modelName} for another school`
+              `SchoolAdmin ${req.user.email} attempted to create ${modelName} for another school`,
             );
             return res.status(403).json({
               message: 'You can only create entities for your assigned school',
             });
           }
-          logger.info(`SchoolAdmin ${req.user.email} authorized to create ${modelName}`);
+          logger.info(
+            `SchoolAdmin ${req.user.email} authorized to create ${modelName}`,
+          );
           return next();
         }
 
@@ -104,7 +113,7 @@ const validateUserAccess = (allowedRoles, modelName) => {
             return res.status(403).json({ message: 'Access denied' });
           }
           logger.info(
-            `SchoolAdmin ${req.user.email} authorized to access ${modelName} with ID ${params.id}`
+            `SchoolAdmin ${req.user.email} authorized to access ${modelName} with ID ${params.id}`,
           );
           return next();
         }
@@ -113,7 +122,7 @@ const validateUserAccess = (allowedRoles, modelName) => {
         if (!params.id) {
           query.school = req.user.school;
           logger.info(
-            `SchoolAdmin ${req.user.email} authorized for ${modelName} list with school filter`
+            `SchoolAdmin ${req.user.email} authorized for ${modelName} list with school filter`,
           );
           return next();
         }
@@ -128,7 +137,6 @@ const validateUserAccess = (allowedRoles, modelName) => {
     }
   };
 };
-
 
 const getRedirectUrlForSchoolAdmin = (originalUrl, id) => {
   const redirectionRules = {
@@ -145,7 +153,7 @@ const getRedirectUrlForSchoolAdmin = (originalUrl, id) => {
 
 // Middleware for redirection based on SchoolAdmin role
 const schoolAdminRedirect = (req, res, next) => {
-  if (req.user.role === 'SchoolAdmin' && req.params ) {
+  if (req.user.role === 'SchoolAdmin' && req.params) {
     logger.info(JSON.stringify(req.user));
 
     const redirectUrl = getRedirectUrlForSchoolAdmin(

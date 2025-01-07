@@ -14,11 +14,28 @@ const studentRoutes = require('./routes/studentRoutes');
 const logger = require('./utils/logger'); // Import the logger
 const setupSwagger = require('./swagger/swagger'); // Import the Swagger setup
 const errorHandler = require('./middlewares/errorHandlerMiddleware');
+const rateLimit = require('express-rate-limit');
+
+// Apply a rate limit to all requests
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 500, // Limit each IP to 100 requests per `window` (15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: {
+    status: 429,
+    message: 'Too many requests from this IP, please try again later.',
+  },
+});
+
+// Apply the rate limiter to all requests
 
 dotenv.config();
 connectDB();
 
 const app = express();
+
+app.use(limiter);
 
 // Middleware to parse JSON
 app.use(bodyParser.json());
@@ -26,11 +43,11 @@ app.use(bodyParser.json());
 app.use(helmet());
 // app.use(cors());
 const corsOptions = {
-  origin: '*',  // Allow all domains (can be changed to specific domains if needed)
+  origin: '*', // Allow all domains (can be changed to specific domains if needed)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],  // Allow specific headers
+  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
   preflightContinue: false,
-  optionsSuccessStatus: 204
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
@@ -44,6 +61,9 @@ app.use((req, res, next) => {
 setupSwagger(app);
 
 // Routes
+app.get('/', (req, res) => {
+  res.send('School Management API');
+});
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/schools', schoolRoutes);

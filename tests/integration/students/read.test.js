@@ -34,14 +34,14 @@ describe('Student Read API', () => {
 
     const classroom = await Classroom.create({
       name: 'Test Classroom',
-      school: schoolId
+      school: schoolId,
     });
     classroomId = classroom._id;
 
     const student = await Student.create({
       ...testStudent,
       school: schoolId,
-      classroom: classroomId
+      classroom: classroomId,
     });
     studentId = student._id;
   });
@@ -77,12 +77,12 @@ describe('Student Read API', () => {
     const otherSchool = await School.create({
       name: 'Other School',
       address: '456 Other St',
-      contactNumber: '0987654321'
+      contactNumber: '0987654321',
     });
 
     const otherClassroom = await Classroom.create({
       name: 'Other Classroom',
-      school: otherSchool._id
+      school: otherSchool._id,
     });
 
     const otherStudent = await Student.create({
@@ -92,7 +92,7 @@ describe('Student Read API', () => {
       phone: '1122334455',
       school: otherSchool._id,
       classroom: otherClassroom._id,
-      enrollmentStatus: 'Enrolled'
+      enrollmentStatus: 'Enrolled',
     });
 
     const response = await request(app)

@@ -40,7 +40,7 @@ describe('Classroom Creation API', () => {
       .set('Authorization', `Bearer ${superAdminToken}`)
       .send({
         name: 'New Classroom',
-        school: schoolId
+        school: schoolId,
       });
 
     expect(response.status).toBe(201);
@@ -53,7 +53,7 @@ describe('Classroom Creation API', () => {
       .set('Authorization', `Bearer ${schoolAdminToken}`)
       .send({
         name: 'Admin Classroom',
-        school: schoolId
+        school: schoolId,
       });
 
     expect(response.status).toBe(201);
@@ -64,7 +64,7 @@ describe('Classroom Creation API', () => {
     const otherSchool = await School.create({
       name: 'Other School',
       address: '456 Other St',
-      contactNumber: '0987654321'
+      contactNumber: '0987654321',
     });
 
     const response = await request(app)
@@ -72,7 +72,7 @@ describe('Classroom Creation API', () => {
       .set('Authorization', `Bearer ${schoolAdminToken}`)
       .send({
         name: 'Unauthorized Classroom',
-        school: otherSchool._id.toString() // Convert ObjectId to string
+        school: otherSchool._id.toString(), // Convert ObjectId to string
       });
 
     expect(response.status).toBe(403);
@@ -83,7 +83,7 @@ describe('Classroom Creation API', () => {
       .post('/api/classrooms')
       .set('Authorization', `Bearer ${superAdminToken}`)
       .send({
-        school: schoolId
+        school: schoolId,
       });
 
     expect(response.status).toBe(400);

@@ -32,7 +32,7 @@ describe('School Creation API', () => {
       .send({
         name: 'New School',
         address: '123 New St',
-        contactNumber: '1234567890'
+        contactNumber: '1234567890',
       });
 
     expect(response.status).toBe(201);
@@ -46,7 +46,7 @@ describe('School Creation API', () => {
       .send({
         name: 'Another School',
         address: '456 Another St',
-        contactNumber: '0987654321'
+        contactNumber: '0987654321',
       });
 
     expect(response.status).toBe(403);
@@ -58,7 +58,7 @@ describe('School Creation API', () => {
       .set('Authorization', `Bearer ${superAdminToken}`)
       .send({
         address: '789 Missing Name St',
-        contactNumber: '1122334455'
+        contactNumber: '1122334455',
       });
 
     expect(response.status).toBe(400);

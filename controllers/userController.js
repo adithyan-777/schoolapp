@@ -33,12 +33,10 @@ const registerUser = asyncHandler(async (req, res) => {
   });
   await newUser.save();
 
-  res
-    .status(201)
-    .json({
-      message: 'User created successfully.',
-      user: { id: newUser._id, email: newUser.email },
-    });
+  res.status(201).json({
+    message: 'User created successfully.',
+    user: { id: newUser._id, email: newUser.email },
+  });
 });
 
 // Get all users

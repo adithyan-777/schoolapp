@@ -36,14 +36,14 @@ describe('Student Update API', () => {
 
     const classroom = await Classroom.create({
       name: 'Test Classroom',
-      school: schoolId
+      school: schoolId,
     });
     classroomId = classroom._id.toString(); // Convert ObjectId to string
 
     const student = await Student.create({
       ...testStudent,
       school: schoolId,
-      classroom: classroomId
+      classroom: classroomId,
     });
     studentId = student._id.toString(); // Convert ObjectId to string
   });
@@ -54,7 +54,7 @@ describe('Student Update API', () => {
       .set('Authorization', `Bearer ${superAdminToken}`)
       .send({
         firstName: 'Updated John',
-        lastName: 'Updated Doe'
+        lastName: 'Updated Doe',
       });
 
     expect(response.status).toBe(200);
@@ -67,7 +67,7 @@ describe('Student Update API', () => {
       .set('Authorization', `Bearer ${schoolAdminToken}`)
       .send({
         firstName: 'Updated Jane',
-        lastName: 'Updated Doe'
+        lastName: 'Updated Doe',
       });
 
     expect(response.status).toBe(200);
@@ -78,12 +78,12 @@ describe('Student Update API', () => {
     const otherSchool = await School.create({
       name: 'Other School',
       address: '456 Other St',
-      contactNumber: '0987654321'
+      contactNumber: '0987654321',
     });
 
     const otherClassroom = await Classroom.create({
       name: 'Other Classroom',
-      school: otherSchool._id.toString() // Convert ObjectId to string
+      school: otherSchool._id.toString(), // Convert ObjectId to string
     });
 
     const otherStudent = await Student.create({
@@ -93,14 +93,14 @@ describe('Student Update API', () => {
       phone: '1122334455',
       school: otherSchool._id.toString(), // Convert ObjectId to string
       classroom: otherClassroom._id.toString(), // Convert ObjectId to string
-      enrollmentStatus: 'Enrolled'
+      enrollmentStatus: 'Enrolled',
     });
 
     const response = await request(app)
       .put(`/api/students/${otherStudent._id}`)
       .set('Authorization', `Bearer ${schoolAdminToken}`)
       .send({
-        firstName: 'Unauthorized Update'
+        firstName: 'Unauthorized Update',
       });
 
     expect(response.status).toBe(403);
@@ -111,7 +111,7 @@ describe('Student Update API', () => {
       .put(`/api/students/${studentId}`)
       .set('Authorization', `Bearer ${superAdminToken}`)
       .send({
-        email: ''
+        email: '',
       });
 
     expect(response.status).toBe(400);

@@ -63,7 +63,7 @@ describe('School Read API', () => {
     const otherSchool = await School.create({
       name: 'Other School',
       address: '456 Other St',
-      contactNumber: '0987654321'
+      contactNumber: '0987654321',
     });
 
     const response = await request(app)

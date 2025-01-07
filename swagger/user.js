@@ -15,14 +15,23 @@ module.exports = {
                 items: {
                   type: 'object',
                   properties: {
-                    _id: { type: 'string', example: '5f8d0d55b54764421b7156c1' },
+                    _id: {
+                      type: 'string',
+                      example: '5f8d0d55b54764421b7156c1',
+                    },
                     name: { type: 'string', example: 'Alice Smith' },
-                    email: { type: 'string', example: 'alice.smith@example.com' },
+                    email: {
+                      type: 'string',
+                      example: 'alice.smith@example.com',
+                    },
                     role: { type: 'string', example: 'SchoolAdmin' },
                     school: {
                       type: 'object',
                       properties: {
-                        _id: { type: 'string', example: '5f8d0d55b54764421b7156c2' },
+                        _id: {
+                          type: 'string',
+                          example: '5f8d0d55b54764421b7156c2',
+                        },
                         name: { type: 'string', example: 'Example School' },
                       },
                       nullable: true,
@@ -30,9 +39,15 @@ module.exports = {
                     createdBy: {
                       type: 'object',
                       properties: {
-                        _id: { type: 'string', example: '5f8d0d55b54764421b7156c3' },
+                        _id: {
+                          type: 'string',
+                          example: '5f8d0d55b54764421b7156c3',
+                        },
                         name: { type: 'string', example: 'Admin User' },
-                        email: { type: 'string', example: 'admin.user@example.com' },
+                        email: {
+                          type: 'string',
+                          example: 'admin.user@example.com',
+                        },
                       },
                     },
                     createdAt: {
@@ -87,12 +102,21 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'User created successfully.' },
+                  message: {
+                    type: 'string',
+                    example: 'User created successfully.',
+                  },
                   user: {
                     type: 'object',
                     properties: {
-                      id: { type: 'string', example: '5f8d0d55b54764421b7156c4' },
-                      email: { type: 'string', example: 'bob.johnson@example.com' },
+                      id: {
+                        type: 'string',
+                        example: '5f8d0d55b54764421b7156c4',
+                      },
+                      email: {
+                        type: 'string',
+                        example: 'bob.johnson@example.com',
+                      },
                     },
                   },
                 },
@@ -136,12 +160,18 @@ module.exports = {
                 properties: {
                   _id: { type: 'string', example: '5f8d0d55b54764421b7156c5' },
                   name: { type: 'string', example: 'Charlie Brown' },
-                  email: { type: 'string', example: 'charlie.brown@example.com' },
+                  email: {
+                    type: 'string',
+                    example: 'charlie.brown@example.com',
+                  },
                   role: { type: 'string', example: 'SchoolAdmin' },
                   school: {
                     type: 'object',
                     properties: {
-                      _id: { type: 'string', example: '5f8d0d55b54764421b7156c2' },
+                      _id: {
+                        type: 'string',
+                        example: '5f8d0d55b54764421b7156c2',
+                      },
                       name: { type: 'string', example: 'Example School' },
                     },
                     nullable: true,
@@ -149,9 +179,15 @@ module.exports = {
                   createdBy: {
                     type: 'object',
                     properties: {
-                      _id: { type: 'string', example: '5f8d0d55b54764421b7156c3' },
+                      _id: {
+                        type: 'string',
+                        example: '5f8d0d55b54764421b7156c3',
+                      },
                       name: { type: 'string', example: 'Admin User' },
-                      email: { type: 'string', example: 'admin.user@example.com' },
+                      email: {
+                        type: 'string',
+                        example: 'admin.user@example.com',
+                      },
                     },
                   },
                   createdAt: {
@@ -224,7 +260,10 @@ module.exports = {
                   school: {
                     type: 'object',
                     properties: {
-                      _id: { type: 'string', example: '5f8d0d55b54764421b7156c2' },
+                      _id: {
+                        type: 'string',
+                        example: '5f8d0d55b54764421b7156c2',
+                      },
                       name: { type: 'string', example: 'Example School' },
                     },
                     nullable: true,
@@ -232,9 +271,15 @@ module.exports = {
                   createdBy: {
                     type: 'object',
                     properties: {
-                      _id: { type: 'string', example: '5f8d0d55b54764421b7156c3' },
+                      _id: {
+                        type: 'string',
+                        example: '5f8d0d55b54764421b7156c3',
+                      },
                       name: { type: 'string', example: 'Admin User' },
-                      email: { type: 'string', example: 'admin.user@example.com' },
+                      email: {
+                        type: 'string',
+                        example: 'admin.user@example.com',
+                      },
                     },
                   },
                   createdAt: {
@@ -284,7 +329,10 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'User deleted successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'User deleted successfully',
+                  },
                 },
               },
             },

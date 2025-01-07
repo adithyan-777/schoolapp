@@ -34,7 +34,7 @@ describe('Classroom Update API', () => {
 
     const classroom = await Classroom.create({
       name: 'Test Classroom',
-      school: schoolId
+      school: schoolId,
     });
     classroomId = classroom._id.toString(); // Convert ObjectId to string
   });
@@ -44,7 +44,7 @@ describe('Classroom Update API', () => {
       .put(`/api/classrooms/${classroomId}`)
       .set('Authorization', `Bearer ${superAdminToken}`)
       .send({
-        name: 'Updated Classroom'
+        name: 'Updated Classroom',
       });
 
     expect(response.status).toBe(200);
@@ -56,30 +56,33 @@ describe('Classroom Update API', () => {
       .put(`/api/classrooms/${classroomId}`)
       .set('Authorization', `Bearer ${schoolAdminToken}`)
       .send({
-        name: 'Updated Classroom by Admin'
+        name: 'Updated Classroom by Admin',
       });
 
     expect(response.status).toBe(200);
-    expect(response.body.classroom).toHaveProperty('name', 'Updated Classroom by Admin');
+    expect(response.body.classroom).toHaveProperty(
+      'name',
+      'Updated Classroom by Admin',
+    );
   });
 
   it('should not allow SchoolAdmin to update a classroom in another school', async () => {
     const otherSchool = await School.create({
       name: 'Other School',
       address: '456 Other St',
-      contactNumber: '0987654321'
+      contactNumber: '0987654321',
     });
 
     const otherClassroom = await Classroom.create({
       name: 'Other Classroom',
-      school: otherSchool._id.toString() // Convert ObjectId to string
+      school: otherSchool._id.toString(), // Convert ObjectId to string
     });
 
     const response = await request(app)
       .put(`/api/classrooms/${otherClassroom._id.toString()}`)
       .set('Authorization', `Bearer ${schoolAdminToken}`)
       .send({
-        name: 'Unauthorized Update'
+        name: 'Unauthorized Update',
       });
 
     expect(response.status).toBe(403);
@@ -90,7 +93,7 @@ describe('Classroom Update API', () => {
       .put(`/api/classrooms/${classroomId}`)
       .set('Authorization', `Bearer ${superAdminToken}`)
       .send({
-        name: ''
+        name: '',
       });
 
     expect(response.status).toBe(400);

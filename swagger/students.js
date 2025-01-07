@@ -2,7 +2,8 @@ module.exports = {
   '/api/students': {
     post: {
       summary: 'Create a new student',
-      description: 'Create a new student for a specific school. Requires authentication.',
+      description:
+        'Create a new student for a specific school. Requires authentication.',
       tags: ['Students'],
       security: [{ BearerAuth: [] }],
       requestBody: {
@@ -28,11 +29,17 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'Student created successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'Student created successfully',
+                  },
                   student: {
                     type: 'object',
                     properties: {
-                      id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
+                      id: {
+                        type: 'string',
+                        example: '60d21b9467d0d8992e610c87',
+                      },
                       name: { type: 'string', example: 'Student B' },
                     },
                   },
@@ -127,7 +134,8 @@ module.exports = {
           name: 'id',
           in: 'path',
           required: true,
-          description: 'The ID of the school whose students are being retrieved.',
+          description:
+            'The ID of the school whose students are being retrieved.',
           schema: {
             type: 'string',
           },
@@ -328,7 +336,8 @@ module.exports = {
     },
     put: {
       summary: 'Update a student by ID',
-      description: 'Update details of a student by their ID. Requires authentication.',
+      description:
+        'Update details of a student by their ID. Requires authentication.',
       tags: ['Students'],
       security: [{ BearerAuth: [] }],
       parameters: [
@@ -364,11 +373,17 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'Student updated successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'Student updated successfully',
+                  },
                   student: {
                     type: 'object',
                     properties: {
-                      id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
+                      id: {
+                        type: 'string',
+                        example: '60d21b9467d0d8992e610c87',
+                      },
                       name: { type: 'string', example: 'Updated Student Name' },
                     },
                   },
@@ -431,7 +446,10 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  message: { type: 'string', example: 'Student deleted successfully' },
+                  message: {
+                    type: 'string',
+                    example: 'Student deleted successfully',
+                  },
                 },
               },
             },
