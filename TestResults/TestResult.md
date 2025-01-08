@@ -1,6 +1,6 @@
 ## Auth
 - #### Login  
-  ![Login](Screenshot from 2025-01-08 19-39-04.png)
+  ![Login](1.png)
 
 ## Users
 - #### Create  
