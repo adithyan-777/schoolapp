@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const cors = require('cors');
 const https = require('https');
+const http = require('http');
 const fs = require('fs');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -19,7 +20,7 @@ const rateLimit = require('express-rate-limit');
 // Apply a rate limit to all requests
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // Limit each IP to 100 requests per `window` (15 minutes)
+  max: process.env.MAX_REQUESTS, // Limit each IP to 500 requests per `window` (15 minutes)
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
   message: {
@@ -29,7 +30,6 @@ const limiter = rateLimit({
 });
 
 // Apply the rate limiter to all requests
-
 dotenv.config();
 connectDB();
 
@@ -41,7 +41,7 @@ app.use(limiter);
 app.use(bodyParser.json());
 
 app.use(helmet());
-// app.use(cors());
+
 const corsOptions = {
   origin: '*', // Allow all domains (can be changed to specific domains if needed)
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -51,6 +51,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
 // Logging for every incoming request
 app.use((req, res, next) => {
   logger.debug(`${req.method} request to ${req.url}`);
@@ -73,17 +74,28 @@ app.use('/api/students', studentRoutes);
 // Error handler middleware
 app.use(errorHandler);
 
-// Set up SSL certificate options
-const sslOptions = {
-  cert: fs.readFileSync('/etc/ssl/certs/mydomain.crt'), // Path to your self-signed certificate
-  key: process.env.SSL_KEY, // Path to your private key
-};
+// Determine the environment
+const ENV = process.env.NODE_ENV || 'development';
+const PORT = process.env.PORT || (ENV === 'production' ? 443 : 3000);
 
-// Set up the server to listen on a secure HTTPS port
-const PORT = process.env.PORT || 443; // Using 443 for HTTPS by default
-https.createServer(sslOptions, app).listen(PORT, () => {
-  logger.info(`HTTPS Server running on port ${PORT}`);
-  logger.info(`API Docs available at https://localhost:${PORT}/api-docs`);
-});
+if (ENV === 'production') {
+  // Set up SSL certificate options for production
+  const sslOptions = {
+    cert: fs.readFileSync('/etc/ssl/certs/mydomain.crt'), // Path to your self-signed certificate
+    key: process.env.SSL_KEY, // Path to your private key
+  };
+
+  // Start HTTPS server
+  https.createServer(sslOptions, app).listen(PORT, () => {
+    logger.info(`HTTPS Server running on port ${PORT}`);
+    logger.info(`API Docs available at https://localhost:${PORT}/api-docs`);
+  });
+} else {
+  // Start HTTP server for development
+  http.createServer(app).listen(PORT, () => {
+    logger.info(`HTTP Server running on port ${PORT}`);
+    logger.info(`API Docs available at http://localhost:${PORT}/api-docs`);
+  });
+}
 
 module.exports = app;

@@ -7,7 +7,7 @@ const AppError = require('../utils/appError'); // Assuming you have the AppError
 
 // Create a new classroom
 const createClassroom = asyncHandler(async (req, res, next) => {
-  const { name, teacher, school } = req.body;
+  const { name, school } = req.body;
 
   // Check if the school exists
   const schoolExists = await School.findById(school);
@@ -15,16 +15,9 @@ const createClassroom = asyncHandler(async (req, res, next) => {
     return next(new AppError('School not found', 404));
   }
 
-  // Check if the teacher exists (optional, can be null)
-  if (teacher) {
-    const teacherExists = await User.findById(teacher);
-    if (!teacherExists) {
-      return next(new AppError('Teacher not found', 404));
-    }
-  }
 
   // Create the classroom
-  const classroom = new Classroom({ name, teacher, school });
+  const classroom = new Classroom({ name, school });
   await classroom.save();
 
   logger.info(`Classroom created: ${name} in school ${school}`);
@@ -65,7 +58,7 @@ const getClassroomById = asyncHandler(async (req, res, next) => {
 // Update a classroom by ID
 const updateClassroom = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
-  const { name, teacher } = req.body;
+  const { name} = req.body;
 
   // Find the classroom to update
   const classroom = await Classroom.findById(id);
@@ -75,7 +68,6 @@ const updateClassroom = asyncHandler(async (req, res, next) => {
 
   // Update the classroom details
   if (name) classroom.name = name;
-  if (teacher) classroom.teacher = teacher;
 
   await classroom.save();
 

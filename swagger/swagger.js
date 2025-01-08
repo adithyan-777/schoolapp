@@ -75,7 +75,6 @@ swaggerBase.paths = {
   ...classroomsRoutes,
   ...schoolRoutes,
   ...userRoutes,
-  // ...teachersRoutes,
 };
 
 module.exports = (app) => {

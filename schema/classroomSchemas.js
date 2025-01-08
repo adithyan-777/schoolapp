@@ -5,10 +5,6 @@ const classroomSchema = {
       type: 'string',
       minLength: 1,
     },
-    teacher: {
-      type: 'string',
-      pattern: '^[a-fA-F0-9]{24}$', // MongoDB ObjectId
-    },
     school: {
       type: 'string',
       pattern: '^[a-fA-F0-9]{24}$', // MongoDB ObjectId
@@ -24,10 +20,6 @@ const updateClassroomSchema = {
     name: {
       type: 'string',
       minLength: 1,
-    },
-    teacher: {
-      type: 'string',
-      pattern: '^[a-fA-F0-9]{24}$', // MongoDB ObjectId
     },
     school: {
       type: 'string',
