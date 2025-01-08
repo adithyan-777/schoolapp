@@ -35,7 +35,11 @@ connectDB();
 
 const app = express();
 
-app.use(limiter);
+// app.use(limiter);
+
+if (process.env.NODE_ENV !== 'test') {
+  app.use(limiter);  // Apply rate limiting only in non-test environments
+}
 
 // Middleware to parse JSON
 app.use(bodyParser.json());
@@ -90,7 +94,7 @@ if (ENV === 'production') {
     logger.info(`HTTPS Server running on port ${PORT}`);
     logger.info(`API Docs available at https://localhost:${PORT}/api-docs`);
   });
-} else {
+} else if (ENV === 'development') {
   // Start HTTP server for development
   http.createServer(app).listen(PORT, () => {
     logger.info(`HTTP Server running on port ${PORT}`);

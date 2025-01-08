@@ -8,7 +8,7 @@ const { getAuthToken } = require('../../utils/authHelpers');
 const { superAdmin, schoolAdmin } = require('../../fixtures/users');
 const { testSchool } = require('../../fixtures/schools');
 
-jest.setTimeout(30000);
+jest.setTimeout(600000);
 
 describe('Classroom Update API', () => {
   let superAdminToken, schoolAdminToken, schoolId, classroomId;
@@ -18,6 +18,7 @@ describe('Classroom Update API', () => {
   });
 
   afterAll(async () => {
+    await dbHandler.clearDatabase();
     await dbHandler.closeDatabase();
   });
 

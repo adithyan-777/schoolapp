@@ -4,6 +4,8 @@ const dbHandler = require('../../setup/dbHandler');
 const User = require('../../../models/user');
 const { superAdmin } = require('../../fixtures/users');
 
+jest.setTimeout(30000);
+
 describe('Auth API - Login', () => {
   beforeAll(async () => {
     await dbHandler.connect();

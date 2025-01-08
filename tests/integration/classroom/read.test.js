@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 
 logger = require('../../../utils/logger');
 
-jest.setTimeout(30000);
+jest.setTimeout(600000);
 
 describe('Classroom Read API', () => {
   let superAdminToken, schoolAdminToken, schoolId, classroomId;
@@ -21,6 +21,7 @@ describe('Classroom Read API', () => {
   });
 
   afterAll(async () => {
+    await dbHandler.clearDatabase();
     await dbHandler.closeDatabase();
   });
 

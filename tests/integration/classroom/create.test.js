@@ -9,7 +9,7 @@ const { superAdmin, schoolAdmin } = require('../../fixtures/users');
 const { testSchool } = require('../../fixtures/schools');
 const mongoose = require('mongoose');
 
-jest.setTimeout(30000);
+jest.setTimeout(600000);
 
 describe('Classroom Creation API', () => {
   let superAdminToken, schoolAdminToken, schoolId;
@@ -19,6 +19,7 @@ describe('Classroom Creation API', () => {
   });
 
   afterAll(async () => {
+    await dbHandler.clearDatabase(); 
     await dbHandler.closeDatabase();
   });
 

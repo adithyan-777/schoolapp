@@ -4,4 +4,5 @@ module.exports = {
   setupFilesAfterEnv: ['../setup/setupTests.js'],
   testMatch: ['../**/*.test.js'],
   verbose: true,
+  maxWorkers: 1,
 };
