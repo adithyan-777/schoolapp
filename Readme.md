@@ -1,205 +1,145 @@
-# School Management System API
+# **School Management System API**
 
-## **Description**
+## **Overview**
 
-The **School Management System** is a modern and scalable solution designed to streamline the operations of educational institutions by managing schools, classrooms, students, and user roles efficiently. Superadmins can oversee multiple schools, while school administrators handle classroom capacities, student enrollments, and profiles. The system supports secure data management with MongoDB, role-based access control, and encrypted passwords. With comprehensive RESTful APIs and Swagger documentation, it integrates seamlessly into other applications, offering an intuitive and centralized platform for managing educational institutions effectively.
+The **School Management System** is a scalable and modern solution for managing educational institutions. It streamlines operations by handling schools, classrooms, students, and user roles efficiently. 
 
-## **Database Design**
+- **Superadmins** oversee multiple schools.  
+- **School administrators** manage classroom capacities, student enrollments, and profiles.  
+
+The system uses MongoDB for secure data management, role-based access control, and encrypted passwords. It offers comprehensive RESTful APIs with Swagger documentation, providing a centralized platform that integrates seamlessly into other applications.
+
+---
+
+## **Database Models**
 
 ### **1. School Model**
+Represents a school entity.
 
-Represents the school entity in the application.
-
-#### **Attributes**:
-
-- `name`: (String) The name of the school. Must be unique and is required.
-- `address`: (String) The physical address of the school. Required.
-- `contactNumber`: (String) The contact number for the school. Required.
-
-#### **Timestamps**:
-
-- Automatically adds `createdAt` and `updatedAt` fields to track creation and update times.
-
-#### **Methods**:
-
-- `toJSON`: Converts the Mongoose document into a plain JavaScript object and removes the `__v` field for cleaner responses.
+- **Attributes**:
+  - `name` (String): Name of the school. Unique and required.
+  - `address` (String): School's address. Required.
+  - `contactNumber` (String): Contact number. Required.
+- **Timestamps**: Adds `createdAt` and `updatedAt` automatically.
+- **Methods**:
+  - `toJSON`: Returns a clean object without the `__v` field.
 
 ---
 
 ### **2. Classroom Model**
+Represents a classroom belonging to a school.
 
-Represents the classroom entity, which is associated with a specific school.
-
-#### **Attributes**:
-
-- `name`: (String) The name of the classroom. Must be unique and is required.
-- `school`: (ObjectId) References the school the classroom belongs to. Required.
-
-#### **Timestamps**:
-
-- Automatically adds `createdAt` and `updatedAt` fields.
-
-#### **Methods**:
-
-- `toJSON`: Converts the Mongoose document into a plain JavaScript object and removes the `__v` field for cleaner responses.
+- **Attributes**:
+  - `name` (String): Classroom name. Unique and required.
+  - `school` (ObjectId): References the school. Required.
+- **Timestamps**: Adds `createdAt` and `updatedAt` automatically.
+- **Methods**:
+  - `toJSON`: Returns a clean object without the `__v` field.
 
 ---
 
 ### **3. Student Model**
+Tracks student details, enrollment, and guardians.
 
-Represents students enrolled in schools and associated classrooms.
-
-#### **Attributes**:
-
-- `firstName`: (String) The first name of the student. Required.
-- `lastName`: (String) The last name of the student. Required.
-- `email`: (String) The email of the student. Must be unique and is required.
-- `phone`: (String) Optional phone number of the student.
-- `classroom`: (ObjectId) Reference to the student's current classroom. Required.
-- `school`: (ObjectId) Reference to the student's current school. Required.
-- `enrollmentStatus`: (String) Status of the student's enrollment. Enum values: `Enrolled`, `Transferred`, `Graduated`, `Dropped`. Defaults to `Enrolled`.
-- `enrollmentHistory`: (Array of objects) Tracks the student’s previous school and classroom history, along with their status and enrollment dates.
-- `guardians`: (Array of objects) Stores information about the student’s guardians, including:
-  - `name`: Name of the guardian.
-  - `contactInfo`: Guardian’s phone and email.
-  - `relationship`: Relationship of the guardian to the student.
-- `enrollmentDate`: (Date) The date when the student was enrolled in the current school. Defaults to the current date.
-
-#### **Timestamps**:
-
-- Automatically adds `createdAt` and `updatedAt` fields.
-
-#### **Methods**:
-
-- `toJSON`: Converts the Mongoose document into a plain JavaScript object and removes the `__v` field for cleaner responses.
+- **Attributes**:
+  - `firstName` (String): Student's first name. Required.
+  - `lastName` (String): Student's last name. Required.
+  - `email` (String): Unique and required.
+  - `classroom` (ObjectId): References the classroom. Required.
+  - `school` (ObjectId): References the school. Required.
+  - `enrollmentStatus` (String): Status with options like `Enrolled`, `Graduated`, etc.
+  - `guardians` (Array): Guardian details including name, contact info, and relationship.
+  - `enrollmentDate` (Date): Defaults to the current date.
+- **Timestamps**: Adds `createdAt` and `updatedAt` automatically.
+- **Methods**:
+  - `toJSON`: Returns a clean object without the `__v` field.
 
 ---
 
 ### **4. User Model**
+Represents system users.
 
-Represents the users of the system, including superadmins and school administrators.
-
-#### **Attributes**:
-
-- `name`: (String) The name of the user. Required.
-- `email`: (String) The email address of the user. Must be unique, lowercase, and is required.
-- `password`: (String) The hashed password of the user. Required.
-- `role`: (String) The role of the user. Enum values: `SuperAdmin`, `SchoolAdmin`. Required.
-- `school`: (ObjectId) Reference to the associated school for a `SchoolAdmin`. Optional for `SuperAdmin`.
-- `createdBy`: (ObjectId) Reference to the user who created this user. Optional.
-
-#### **Timestamps**:
-
-- Automatically adds `createdAt` and `updatedAt` fields.
-
-#### **Pre-save Hook**:
-
-- Before saving, hashes the password using `bcryptjs` if it is modified.
-
-#### **Methods**:
-
-- `toJSON`: Converts the Mongoose document into a plain JavaScript object, removes the `password` and `__v` fields for secure and clean responses.
+- **Attributes**:
+  - `name` (String): User's name. Required.
+  - `email` (String): Unique and required.
+  - `password` (String): Hashed password. Required.
+  - `role` (String): Either `SuperAdmin` or `SchoolAdmin`. Required.
+  - `school` (ObjectId): References the school for school admins.
+- **Pre-Save Hook**: Hashes the password using `bcryptjs`.
+- **Methods**:
+  - `toJSON`: Removes sensitive fields like `password` and `__v`.
 
 ---
 
-## Relationships Between Models
+## **Relationships**
 
-1. **School ↔ Classroom**:
-
-   - One-to-Many: A school can have multiple classrooms.
-   - Reference: `school` in the Classroom model links to the School model.
-
-2. **School ↔ Student**:
-
-   - One-to-Many: A school can have multiple students.
-   - Reference: `school` in the Student model links to the School model.
-
-3. **Classroom ↔ Student**:
-
-   - One-to-Many: A classroom can have multiple students.
-   - Reference: `classroom` in the Student model links to the Classroom model.
-
-4. **User ↔ School**:
-   - One-to-One (Optional): A `SchoolAdmin` user is associated with a specific school.
-   - Reference: `school` in the User model links to the School model.
+1. **School ↔ Classroom**: A school has multiple classrooms (1-to-Many).  
+2. **School ↔ Student**: A school has multiple students (1-to-Many).  
+3. **Classroom ↔ Student**: A classroom has multiple students (1-to-Many).  
+4. **User ↔ School**: A `SchoolAdmin` is linked to one school.
 
 ---
 
 ## **Features**
 
 - CRUD operations for schools, classrooms, and students.
-- Authentication and authorization.
-- Rate limiting to prevent abuse.
+- Authentication using JSON Web Tokens (JWT).
+- Role-based access control.
+- Rate limiting for API protection.
 - Centralized error handling.
-- CORS support for secure API usage.
-- Swagger documentation for APIs.
+- CORS support for secure API access.
+- Swagger documentation for easy API exploration.
+
+---
 
 ## **Installation**
 
-1. **Clone the repository:**
-
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/adithyan-777/schoolapp.git
+   cd schoolapp
    ```
-   git clone https://github.com/your-username/your-repo.git
-   cd your-repo
-   ```
 
-2. **Install dependencies:**
-
-   ```
+2. **Install dependencies**:
+   ```bash
    npm install
    ```
 
-3. **Set up environment variables:** Create a `.env` file in the root directory with the following variables:
-
-```
-PORT=3000
-MONGO_URI=mongodb://localhost:27017/schoolapp
-MONGO_TEST_URI=mongodb://localhost:27017/test
-SERVER_URL="http://11.33.200.98:3000
-NODE_ENV="development"
-JWT_SECRET=your_jwt_secret
-RATE_LIMIT_MAX=100
-```
-
-## **Usage**
-
-1. **Start the server:**
-
+3. **Set up environment variables**:  
+   Create a `.env` file with these variables:
+   ```env
+   PORT=3000
+   MONGO_URI="mongodb://localhost:27017/schoolapp"
+   MONGO_PASS="password"
+   MONGO_TEST_URI="mongodb://localhost:27017/schoolapp"
+   SERVER_URL="http:12.22.200.89:3000"
+   JWT_SECRET=your_jwt_secret
+   NODE_ENV="development"
+   RATE_LIMIT_MAX=100
    ```
+
+4. **Start the server**:
+   ```bash
    npm start
    ```
 
-2. **Run in development mode (with hot-reloading):**
+---
 
-   ```
-   npm run dev
-   ```
+## **Usage**
 
-3. **Access Swagger API documentation:** Navigate to http://localhost:3000/api-docs.
+- **Swagger documentation**:  
+  Navigate to `http://localhost:3000/api-docs`.
 
-## **Scripts**
+---
 
-- **Start server:**
-  ```
-  npm start
-  ```
-- **Run development server:**
-  ```
-  npm run dev
-  ```
+## **Technologies**
 
-## Tests
+- **Backend**: Node.js, Express.js.  
+- **Database**: MongoDB.  
+- **Authentication**: JWT.  
+- **Documentation**: Swagger.  
+- **Validation**: AJV.  
+- **Testing**: Jest, Supertest.  
+- **Hosting**: AWS EC2 with Nginx and PM2.  
 
-it contains subfolders like `config` for Jest configuration, `fixtures` for sample test data, `integration` for API endpoint validation (covering CRUD operations for schools, classrooms, students, and users), `setup` for managing the test environment, and `utils` for reusable test helpers. This comprehensive structure verifies the application's behavior across various scenarios, ensuring robustness and maintainability.
-
-## **Technologies Used**
-
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB
-- **Documentation:** Swagger
-- **Input validation** : AJV
-- **Authentication:** JSON Web Tokens (JWT)
-- **Rate Limiting:** Express Rate Limit
-- **Logging**: winston
-- **Testing:** Jest, Supetest
-- **Environment Variables:** dotenv
+---
