@@ -34,7 +34,6 @@ const updateSchoolSchema = {
       pattern: '^[0-9]{10,15}$',
     },
   },
-  required: ['name', 'address', 'contactNumber'],
   additionalProperties: false,
 };
 
