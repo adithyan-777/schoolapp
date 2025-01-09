@@ -13,10 +13,32 @@ module.exports = {
             schema: {
               type: 'object',
               properties: {
-                name: { type: 'string', example: 'Student B' },
-                school: { type: 'string', example: '60d21b4667d0d8992e610c85' },
+                firstName: {
+                  type: 'string',
+                },
+                lastName: {
+                  type: 'string',
+                },
+                email: {
+                  type: 'string',
+                  example: 'example@example.com',
+                },
+                classroom: {
+                  type: 'string',
+                  example: '60d21b9467d0d8992e610c87',
+                },
+                school: {
+                  type: 'string',
+                  example: '60d21b9467d0d8992e610c87',
+                },
               },
-              required: ['name', 'school'],
+              required: [
+                'firstName',
+                'lastName',
+                'email',
+                'classroom',
+                'school',
+              ],
             },
           },
         },
@@ -151,13 +173,106 @@ module.exports = {
                 items: {
                   type: 'object',
                   properties: {
-                    id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
-                    name: { type: 'string', example: 'Student A' },
+                    id: { type: 'string', example: '1234567890abcdef12345678' },
+                    firstName: { type: 'string', example: 'John' },
+                    lastName: { type: 'string', example: 'Doe' },
+                    email: { type: 'string', example: 'john.doe@example.com' },
+                    classroom: {
+                      type: 'object',
+                      properties: {
+                        id: {
+                          type: 'string',
+                          example: 'abcdef1234567890abcdef12',
+                        },
+                        name: { type: 'string', example: 'Classroom Alpha' },
+                        school: {
+                          type: 'string',
+                          example: 'abcdef0987654321abcdef09',
+                        },
+                        createdAt: {
+                          type: 'string',
+                          example: '2025-01-10T08:00:00.000Z',
+                        },
+                        updatedAt: {
+                          type: 'string',
+                          example: '2025-01-10T08:30:00.000Z',
+                        },
+                        __v: { type: 'number', example: 1 },
+                      },
+                    },
                     school: {
                       type: 'object',
                       properties: {
-                        name: { type: 'string', example: 'Greenwood High' },
+                        id: {
+                          type: 'string',
+                          example: 'abcdef0987654321abcdef09',
+                        },
+                        name: { type: 'string', example: 'Blue Ridge Academy' },
+                        address: {
+                          type: 'string',
+                          example: '123 Main Street, Springfield',
+                        },
+                        contactNumber: {
+                          type: 'string',
+                          example: '123-456-7890',
+                        },
+                        createdAt: {
+                          type: 'string',
+                          example: '2025-01-09T05:00:00.000Z',
+                        },
+                        updatedAt: {
+                          type: 'string',
+                          example: '2025-01-09T05:15:00.000Z',
+                        },
+                        __v: { type: 'number', example: 2 },
                       },
+                    },
+                    enrollmentStatus: { type: 'string', example: 'Enrolled' },
+                    enrollmentHistory: {
+                      type: 'array',
+                      items: { type: 'object' },
+                      example: [
+                        { status: 'Enrolled', date: '2025-01-05T09:00:00.000Z' },
+                        {
+                          status: 'Graduated',
+                          date: '2025-01-07T12:00:00.000Z',
+                        },
+                      ],
+                    },
+                    guardians: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          name: { type: 'string', example: 'Jane Doe' },
+                          relation: { type: 'string', example: 'Mother' },
+                          contact: { type: 'string', example: '987-654-3210' },
+                        },
+                      },
+                      example: [
+                        {
+                          name: 'Jane Doe',
+                          relation: 'Mother',
+                          contact: '987-654-3210',
+                        },
+                        {
+                          name: 'Mark Doe',
+                          relation: 'Father',
+                          contact: '876-543-2109',
+                        },
+                      ],
+                    },
+                    enrollmentDate: {
+                      type: 'string',
+                      example: '2025-01-09T10:00:00.000Z',
+                    },
+                    createdAt: {
+                      type: 'string',
+                      example: '2025-01-09T10:00:00.000Z',
+                    },
+                    updatedAt: {
+                      type: 'string',
+                      example: '2025-01-10T08:30:00.000Z',
                     },
                   },
                 },
@@ -231,26 +346,106 @@ module.exports = {
                 items: {
                   type: 'object',
                   properties: {
-                    id: { type: 'string', description: 'ID of the student.' },
-                    firstName: {
-                      type: 'string',
-                      description: 'First name of the student.',
-                    },
-                    lastName: {
-                      type: 'string',
-                      description: 'Last name of the student.',
-                    },
-                    email: {
-                      type: 'string',
-                      description: 'Email of the student.',
-                    },
+                    id: { type: 'string', example: '1234567890abcdef12345678' },
+                    firstName: { type: 'string', example: 'John' },
+                    lastName: { type: 'string', example: 'Doe' },
+                    email: { type: 'string', example: 'john.doe@example.com' },
                     classroom: {
                       type: 'object',
-                      description: 'Details of the classroom.',
+                      properties: {
+                        id: {
+                          type: 'string',
+                          example: 'abcdef1234567890abcdef12',
+                        },
+                        name: { type: 'string', example: 'Classroom Alpha' },
+                        school: {
+                          type: 'string',
+                          example: 'abcdef0987654321abcdef09',
+                        },
+                        createdAt: {
+                          type: 'string',
+                          example: '2025-01-10T08:00:00.000Z',
+                        },
+                        updatedAt: {
+                          type: 'string',
+                          example: '2025-01-10T08:30:00.000Z',
+                        },
+                        __v: { type: 'number', example: 1 },
+                      },
                     },
                     school: {
                       type: 'object',
-                      description: 'Details of the school.',
+                      properties: {
+                        id: {
+                          type: 'string',
+                          example: 'abcdef0987654321abcdef09',
+                        },
+                        name: { type: 'string', example: 'Blue Ridge Academy' },
+                        address: {
+                          type: 'string',
+                          example: '123 Main Street, Springfield',
+                        },
+                        contactNumber: {
+                          type: 'string',
+                          example: '123-456-7890',
+                        },
+                        createdAt: {
+                          type: 'string',
+                          example: '2025-01-09T05:00:00.000Z',
+                        },
+                        updatedAt: {
+                          type: 'string',
+                          example: '2025-01-09T05:15:00.000Z',
+                        },
+                        __v: { type: 'number', example: 2 },
+                      },
+                    },
+                    enrollmentStatus: { type: 'string', example: 'Enrolled' },
+                    enrollmentHistory: {
+                      type: 'array',
+                      items: { type: 'object' },
+                      example: [
+                        { status: 'Enrolled', date: '2025-01-05T09:00:00.000Z' },
+                        {
+                          status: 'Graduated',
+                          date: '2025-01-07T12:00:00.000Z',
+                        },
+                      ],
+                    },
+                    guardians: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          name: { type: 'string', example: 'Jane Doe' },
+                          relation: { type: 'string', example: 'Mother' },
+                          contact: { type: 'string', example: '987-654-3210' },
+                        },
+                      },
+                      example: [
+                        {
+                          name: 'Jane Doe',
+                          relation: 'Mother',
+                          contact: '987-654-3210',
+                        },
+                        {
+                          name: 'Mark Doe',
+                          relation: 'Father',
+                          contact: '876-543-2109',
+                        },
+                      ],
+                    },
+                    enrollmentDate: {
+                      type: 'string',
+                      example: '2025-01-09T10:00:00.000Z',
+                    },
+                    createdAt: {
+                      type: 'string',
+                      example: '2025-01-09T10:00:00.000Z',
+                    },
+                    updatedAt: {
+                      type: 'string',
+                      example: '2025-01-10T08:30:00.000Z',
                     },
                   },
                 },
@@ -292,13 +487,103 @@ module.exports = {
               schema: {
                 type: 'object',
                 properties: {
-                  id: { type: 'string', example: '60d21b9467d0d8992e610c87' },
-                  name: { type: 'string', example: 'Student A' },
+                  id: { type: 'string', example: '1234567890abcdef12345678' },
+                  firstName: { type: 'string', example: 'John' },
+                  lastName: { type: 'string', example: 'Doe' },
+                  email: { type: 'string', example: 'john.doe@example.com' },
+                  classroom: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'string',
+                        example: 'abcdef1234567890abcdef12',
+                      },
+                      name: { type: 'string', example: 'Classroom Alpha' },
+                      school: {
+                        type: 'string',
+                        example: 'abcdef0987654321abcdef09',
+                      },
+                      createdAt: {
+                        type: 'string',
+                        example: '2025-01-10T08:00:00.000Z',
+                      },
+                      updatedAt: {
+                        type: 'string',
+                        example: '2025-01-10T08:30:00.000Z',
+                      },
+                      __v: { type: 'number', example: 1 },
+                    },
+                  },
                   school: {
                     type: 'object',
                     properties: {
-                      name: { type: 'string', example: 'Greenwood High' },
+                      id: {
+                        type: 'string',
+                        example: 'abcdef0987654321abcdef09',
+                      },
+                      name: { type: 'string', example: 'Blue Ridge Academy' },
+                      address: {
+                        type: 'string',
+                        example: '123 Main Street, Springfield',
+                      },
+                      contactNumber: {
+                        type: 'string',
+                        example: '123-456-7890',
+                      },
+                      createdAt: {
+                        type: 'string',
+                        example: '2025-01-09T05:00:00.000Z',
+                      },
+                      updatedAt: {
+                        type: 'string',
+                        example: '2025-01-09T05:15:00.000Z',
+                      },
+                      __v: { type: 'number', example: 2 },
                     },
+                  },
+                  enrollmentStatus: { type: 'string', example: 'Enrolled' },
+                  enrollmentHistory: {
+                    type: 'array',
+                    items: { type: 'object' },
+                    example: [
+                      { status: 'Enrolled', date: '2025-01-05T09:00:00.000Z' },
+                      { status: 'Graduated', date: '2025-01-07T12:00:00.000Z' },
+                    ],
+                  },
+                  guardians: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        name: { type: 'string', example: 'Jane Doe' },
+                        relation: { type: 'string', example: 'Mother' },
+                        contact: { type: 'string', example: '987-654-3210' },
+                      },
+                    },
+                    example: [
+                      {
+                        name: 'Jane Doe',
+                        relation: 'Mother',
+                        contact: '987-654-3210',
+                      },
+                      {
+                        name: 'Mark Doe',
+                        relation: 'Father',
+                        contact: '876-543-2109',
+                      },
+                    ],
+                  },
+                  enrollmentDate: {
+                    type: 'string',
+                    example: '2025-01-09T10:00:00.000Z',
+                  },
+                  createdAt: {
+                    type: 'string',
+                    example: '2025-01-09T10:00:00.000Z',
+                  },
+                  updatedAt: {
+                    type: 'string',
+                    example: '2025-01-10T08:30:00.000Z',
                   },
                 },
               },

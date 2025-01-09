@@ -71,10 +71,10 @@ const swaggerBase = {
 swaggerBase.paths = {
   ...swaggerBase.paths,
   ...authRoutes,
-  ...studentRoutes,
-  ...classroomsRoutes,
-  ...schoolRoutes,
   ...userRoutes,
+  ...schoolRoutes,
+  ...classroomsRoutes,
+  ...studentRoutes,
 };
 
 module.exports = (app) => {

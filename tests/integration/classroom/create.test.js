@@ -19,7 +19,7 @@ describe('Classroom Creation API', () => {
   });
 
   afterAll(async () => {
-    await dbHandler.clearDatabase(); 
+    await dbHandler.clearDatabase();
     await dbHandler.closeDatabase();
   });
 

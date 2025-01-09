@@ -15,7 +15,6 @@ const createClassroom = asyncHandler(async (req, res, next) => {
     return next(new AppError('School not found', 404));
   }
 
-
   // Create the classroom
   const classroom = new Classroom({ name, school });
   await classroom.save();
@@ -58,7 +57,7 @@ const getClassroomById = asyncHandler(async (req, res, next) => {
 // Update a classroom by ID
 const updateClassroom = asyncHandler(async (req, res, next) => {
   const id = req.params.id;
-  const { name} = req.body;
+  const { name } = req.body;
 
   // Find the classroom to update
   const classroom = await Classroom.findById(id);
